@@ -1,0 +1,309 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#F4F6F9"
+    android:fitsSystemWindows="true">
+
+    <!-- 1. THANH TIÊU ĐỀ TRÊN CÙNG (CÓ KHOẢNG CÁCH CHỐNG BỊ CHE BỞI GIỜ HỆ THỐNG) -->
+    <RelativeLayout
+        android:id="@+id/layoutHeader"
+        android:layout_width="match_parent"
+        android:layout_height="88dp"
+        android:background="@android:color/white"
+        android:elevation="4dp"
+        android:paddingHorizontal="16dp"
+        android:paddingTop="28dp">
+
+        <!-- Tên ứng dụng bên trái -->
+        <TextView
+            android:id="@+id/tvAppLogo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="12dp"
+            android:text="JobFinder"
+            android:textColor="#00B14F"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <!-- Button Đăng nhập bên phải (Chuẩn TopCV) -->
+        <Button
+            android:id="@+id/btnUserAccountStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="38dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="10dp"
+            android:backgroundTint="#00B14F"
+            android:text="Đăng nhập"
+            android:textColor="@android:color/white"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"
+            android:paddingHorizontal="16dp" />
+    </RelativeLayout>
+
+    <!-- 2. VÙNG NỘI DUNG CUỘN TRƯỢT (SCROLLVIEW ĐỂ LĂN CHUỘT) -->
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/layoutHeader"
+        android:layout_above="@id/layoutBottomActions">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- THẺ 1: Thông tin tiêu đề công việc -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:elevation="2dp"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:layout_marginBottom="12dp">
+
+                <TextView
+                    android:id="@+id/tvJobName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Kế Toán Trưởng Thu Nhập 25tr/Tháng"
+                    android:textColor="#212F3F"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvCompanyName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="Công ty TNHH Thiên Phong Logitex"
+                    android:textColor="#556270"
+                    android:textSize="16sp" />
+
+                <TextView
+                    android:id="@+id/tvJobSalary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="20 - 25 triệu"
+                    android:textColor="#00B14F"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- THẺ 2: Thông tin chung bổ sung -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:elevation="2dp"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:layout_marginBottom="12dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ℹ️ Thông tin chung"
+                    android:textColor="#212F3F"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvJobGeneralInfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="- Cấp bậc: Trưởng phòng\n- Kinh nghiệm: Trên 5 năm\n- Số lượng tuyển: 01 người\n- Giới tính: Không yêu cầu"
+                    android:textColor="#4A5568"
+                    android:textSize="14sp"
+                    android:lineSpacingMultiplier="1.2"/>
+            </LinearLayout>
+
+            <!-- THẺ 3: Địa điểm làm việc -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:elevation="2dp"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:layout_marginBottom="12dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="📍 Địa điểm làm việc"
+                    android:textColor="#212F3F"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvJobAddress"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="Khu công nghiệp, Thành phố Tây Ninh, Tỉnh Tây Ninh"
+                    android:textColor="#4A5568"
+                    android:textSize="14sp"
+                    android:lineSpacingMultiplier="1.2"/>
+            </LinearLayout>
+
+            <!-- THẺ 4: Thời gian làm việc -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:elevation="2dp"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:layout_marginBottom="12dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="⏰ Thời gian làm việc"
+                    android:textColor="#212F3F"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvJobTime"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="- Thứ 2 - Thứ 6: Sáng 8:00 - 12:00, Chiều 13:30 - 17:30\n- Thứ 7: Sáng làm việc, Chiều nghỉ."
+                    android:textColor="#4A5568"
+                    android:textSize="14sp"
+                    android:lineSpacingMultiplier="1.2"/>
+            </LinearLayout>
+
+            <!-- THẺ 5: Mô tả công việc -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:elevation="2dp"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:layout_marginBottom="12dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="📝 Mô tả công việc"
+                    android:textColor="#212F3F"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvJobDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="- Tổ chức hệ thống kế toán doanh nghiệp và trực tiếp chỉ đạo bộ phận.\n- Kiểm tra, giám sát các khoản thu/chi tài chính, công nợ.\n- Lập báo cáo tài chính định kỳ theo quy định pháp luật."
+                    android:textColor="#4A5568"
+                    android:textSize="14sp"
+                    android:lineSpacingMultiplier="1.2"/>
+            </LinearLayout>
+
+            <!-- THẺ 6: Yêu cầu ứng viên -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:elevation="2dp"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:layout_marginBottom="12dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="📋 Yêu cầu ứng viên"
+                    android:textColor="#212F3F"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvJobRequirement"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="- Tốt nghiệp Đại học chuyên ngành Kế toán / Kiểm toán / Tài chính.\n- Có tối thiểu 5 năm kinh nghiệm làm việc ở vị trí tương đương.\n- Nắm vững các quy định pháp luật về Thuế và Kế toán doanh nghiệp."
+                    android:textColor="#4A5568"
+                    android:textSize="14sp"
+                    android:lineSpacingMultiplier="1.2"/>
+            </LinearLayout>
+
+            <!-- THẺ 7: Quyền lợi được hưởng -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@android:color/white"
+                android:elevation="2dp"
+                android:orientation="vertical"
+                android:padding="16dp"
+                android:layout_marginBottom="16dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🎁 Quyền lợi được hưởng"
+                    android:textColor="#212F3F"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvJobBenefits"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="- Lương tháng 13 + Thưởng hiệu quả công việc định kỳ.\n- Tham gia đầy đủ BHXH, BHYT, BHTN theo luật định.\n- Được tham gia các khóa đào tạo nâng cao năng lực quản lý.\n- Du lịch nghỉ mát hàng năm cùng công ty."
+                    android:textColor="#4A5568"
+                    android:textSize="14sp"
+                    android:lineSpacingMultiplier="1.2"/>
+            </LinearLayout>
+
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
+
+    <!-- 3. THANH NÚT BẤM CỐ ĐỊNH Ở ĐÁY (ỨNG TUYỂN / LƯU VIỆC) -->
+    <LinearLayout
+        android:id="@+id/layoutBottomActions"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@android:color/white"
+        android:elevation="8dp"
+        android:orientation="horizontal"
+        android:padding="12dp">
+
+        <ImageButton
+            android:id="@+id/btnFavorite"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@android:drawable/btn_star_big_off"
+            android:contentDescription="Lưu việc làm" />
+
+        <Button
+            android:id="@+id/btnApplyNow"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginStart="12dp"
+            android:backgroundTint="#00B14F"
+            android:text="ỨNG TUYỂN NGAY"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+</RelativeLayout>
