@@ -66,3 +66,4 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
             imgCompany = itemView.findViewById(R.id.imgCompanyLogo); // XML là imgCompanyLogo
         }
     }
+}
