@@ -1,158 +1,52 @@
 package com.example.jobfinderapp.activities;
 
-import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.example.jobfinderapp.R;
-import com.example.jobfinderapp.adapters.CategoryAdapter;
-import com.example.jobfinderapp.adapters.JobAdapter;
-import com.example.jobfinderapp.database.DBHelper;
-import com.example.jobfinderapp.models.Category;
-import com.example.jobfinderapp.models.Job;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-
 import java.util.ArrayList;
 import java.util.List;
 
+import com.example.jobfinderapp.JobAdapter;
+import com.example.jobfinderapp.R;
+import com.example.jobfinderapp.models.Job;
+
 public class HomeActivity extends AppCompatActivity {
 
-    private TextView tvUserName;
-    private ImageView ivNotification, ivUserAvatar;
-    private EditText etSearch;
-    private RecyclerView rvCategories, rvJobs;
-    private BottomNavigationView bottomNavigation;
-    
-    private DBHelper dbHelper;
-    private JobAdapter jobAdapter;
-    private CategoryAdapter categoryAdapter;
-    private List<Job> jobList;
-    private List<Category> categoryList;
-    
-    private int currentUserId;
+    // Khai báo biến toàn cục để tránh lỗi đỏ "Cannot resolve symbol"
+    private RecyclerView rvFeaturedJobs;
+    private RecyclerView rvRecentJobs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
-        // Kiểm tra quyền truy cập (Candidate only)
-        SharedPreferences pref = getSharedPreferences("UserSession", MODE_PRIVATE);
-        String role = pref.getString("USER_ROLE", "candidate");
-        if (!"candidate".equals(role)) {
-            Toast.makeText(this, "Bạn không có quyền truy cập trang này", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(this, LoginActivity.class));
-            finish();
-            return;
-        }
-
         setContentView(R.layout.activity_home);
 
-        dbHelper = new DBHelper(this);
-        initViews();
-        setupUserData();
-        setupCategories();
-        setupJobs();
-        setupBottomNavigation();
-        setupEvents();
-    }
+        // Ánh xạ View từ XML layout
+        rvFeaturedJobs = findViewById(R.id.rvFeaturedJobs);
+        rvRecentJobs = findViewById(R.id.rvRecentJobs);
 
-    private void initViews() {
-        tvUserName = findViewById(R.id.tvUserName);
-        ivNotification = findViewById(R.id.ivNotification);
-        ivUserAvatar = findViewById(R.id.ivUserAvatar);
-        etSearch = findViewById(R.id.etSearch);
-        rvCategories = findViewById(R.id.rvCategories);
-        rvJobs = findViewById(R.id.rvJobs);
-        bottomNavigation = findViewById(R.id.bottomNavigation);
-    }
+        // Cài đặt LayoutManager hiển thị dạng danh sách cuộn dọc
+        rvFeaturedJobs.setLayoutManager(new LinearLayoutManager(this));
+        rvRecentJobs.setLayoutManager(new LinearLayoutManager(this));
 
-    private void setupUserData() {
-        // Lấy thông tin từ SharedPreferences
-        SharedPreferences pref = getSharedPreferences("UserSession", MODE_PRIVATE);
-        currentUserId = pref.getInt("USER_ID", -1);
-        String userName = pref.getString("USER_NAME", "Người dùng");
-        
-        if (currentUserId == -1) {
-            // Nếu chưa login, quay lại LoginActivity
-            startActivity(new Intent(this, LoginActivity.class));
-            finish();
-            return;
-        }
-        
-        tvUserName.setText(userName);
-    }
+        // DANH SÁCH VIỆC LÀM NỔI BẬT (Đã thêm link URL ảnh demo tại tham số cuối)
+        List<Job> featuredJobsList = new ArrayList<>();
+        featuredJobsList.add(new Job("Android Developer Intern", "Công ty Công nghệ ABC", "💰 Thỏa thuận", "📍 Quận 1, HCM", "https://picsum.photos/200?random=1"));
+        featuredJobsList.add(new Job("Java Backend Intern", "Tập đoàn Giải pháp XYZ", "💰 5 - 7 Triệu", "📍 Bình Thạnh, HCM", "https://picsum.photos/200?random=2"));
+        featuredJobsList.add(new Job("UI/UX Design Intern", "Ví Điện Tử MoMo", "💰 Thỏa thuận", "📍 Quận 3, HCM", "https://picsum.photos/200?random=3"));
 
-    private void setupCategories() {
-        categoryList = dbHelper.getAllCategories();
-        categoryAdapter = new CategoryAdapter(categoryList);
-        rvCategories.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
-        rvCategories.setAdapter(categoryAdapter);
-    }
+        JobAdapter featuredAdapter = new JobAdapter(featuredJobsList);
+        rvFeaturedJobs.setAdapter(featuredAdapter);
 
-    private void setupJobs() {
-        jobList = dbHelper.getAllJobs();
-        jobAdapter = new JobAdapter(this, jobList, currentUserId, (job, isFavorite) -> {
-            // Xử lý toggle Favorite
-            if (isFavorite) {
-                dbHelper.removeFavorite(currentUserId, job.getId());
-                Toast.makeText(HomeActivity.this, "Đã bỏ yêu thích", Toast.LENGTH_SHORT).show();
-            } else {
-                dbHelper.addToFavorite(currentUserId, job.getId());
-                Toast.makeText(HomeActivity.this, "Đã thêm vào yêu thích", Toast.LENGTH_SHORT).show();
-            }
-        });
-        rvJobs.setLayoutManager(new LinearLayoutManager(this));
-        rvJobs.setAdapter(jobAdapter);
-    }
+        // DANH SÁCH VIỆC LÀM MỚI NHẤT (Đã thêm link URL ảnh demo tại tham số cuối)
+        List<Job> recentJobsList = new ArrayList<>();
+        recentJobsList.add(new Job("Frontend Web Intern", "VNG Campus", "💰 Lương cạnh tranh", "📍 Quận 7, HCM", "https://picsum.photos/200?random=4"));
+        recentJobsList.add(new Job("Flutter Mobile Intern", "FPT Software", "💰 4 - 6 Triệu", "📍 Thủ Đức, HCM", "https://picsum.photos/200?random=5"));
+        recentJobsList.add(new Job("Python Data Trainee", "TMA Solutions", "💰 5 Triệu", "📍 Phú Nhuận, HCM", "https://picsum.photos/200?random=6"));
+        recentJobsList.add(new Job("iOS Developer Intern", "VCCorp Group", "💰 Thỏa thuận", "📍 Cầu Giấy, HN", "https://picsum.photos/200?random=7"));
 
-    private void setupBottomNavigation() {
-        bottomNavigation.setSelectedItemId(R.id.nav_home);
-        bottomNavigation.setOnItemSelectedListener(item -> {
-            int itemId = item.getItemId();
-            if (itemId == R.id.nav_home) {
-                return true;
-            } else if (itemId == R.id.nav_favorite) {
-                startActivity(new Intent(this, FavoriteActivity.class));
-                return true;
-            } else if (itemId == R.id.nav_profile) {
-                startActivity(new Intent(this, ProfileActivity.class));
-                return true;
-            }
-            return false;
-        });
-    }
-
-    private void setupEvents() {
-        // Chuyển sang NotificationActivity
-        ivNotification.setOnClickListener(v -> {
-            Intent intent = new Intent(HomeActivity.this, NotificationActivity.class);
-            startActivity(intent);
-        });
-
-        // Xử lý tìm kiếm truy vấn trực tiếp SQLite
-        etSearch.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                String keyword = s.toString().trim();
-                List<Job> filteredJobs = dbHelper.searchJobs(keyword);
-                jobAdapter.updateList(filteredJobs);
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {}
-        });
+        JobAdapter recentAdapter = new JobAdapter(recentJobsList);
+        rvRecentJobs.setAdapter(recentAdapter);
     }
 }

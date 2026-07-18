@@ -27,7 +27,7 @@ public class JobDetailActivity extends AppCompatActivity {
     private ImageView ivDetailLogo;
     private TextView tvDetailTitle, tvDetailCompany, tvDetailSalary, tvDetailLocation, tvDetailDeadline, tvDetailDesc, tvDetailReq;
     private MaterialButton btnDetailFavorite, btnApplyNow;
-    
+
     private DBHelper dbHelper;
     private int jobId;
     private int currentUserId;
@@ -37,7 +37,7 @@ public class JobDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_job_detail);
-        
+
         View mainView = findViewById(R.id.main);
         if (mainView != null) {
             ViewCompat.setOnApplyWindowInsetsListener(mainView, (v, insets) -> {
@@ -52,7 +52,7 @@ public class JobDetailActivity extends AppCompatActivity {
 
         SharedPreferences pref = getSharedPreferences("UserSession", MODE_PRIVATE);
         currentUserId = pref.getInt("USER_ID", -1);
-        
+
         initViews();
         loadJobDetails();
         setupEvents();
@@ -89,6 +89,7 @@ public class JobDetailActivity extends AppCompatActivity {
         Job job = dbHelper.getJobById(jobId);
         if (job != null) {
             tvDetailTitle.setText(job.getTitle());
+            // Sử dụng các hàm đã đồng bộ từ class Job.java chung
             tvDetailCompany.setText(job.getCompanyName());
             tvDetailSalary.setText(job.getSalary());
             tvDetailLocation.setText(job.getLocation());
@@ -122,7 +123,7 @@ public class JobDetailActivity extends AppCompatActivity {
                 Toast.makeText(this, "Vui lòng đăng nhập để thực hiện", Toast.LENGTH_SHORT).show();
                 return;
             }
-            
+
             boolean isFav = dbHelper.isFavorite(currentUserId, jobId);
             boolean success = dbHelper.toggleFavorite(currentUserId, jobId);
             if (success) {
@@ -130,7 +131,7 @@ public class JobDetailActivity extends AppCompatActivity {
                 if (!isFav) {
                     Job job = dbHelper.getJobById(jobId);
                     String jobTitle = (job != null) ? job.getTitle() : "công việc";
-                    dbHelper.addNotification(currentUserId, "Đã thêm vào yêu thích", 
+                    dbHelper.addNotification(currentUserId, "Đã thêm vào yêu thích",
                             "Đã thêm " + jobTitle + " vào danh sách yêu thích.");
                     Toast.makeText(this, "Đã thêm vào yêu thích", Toast.LENGTH_SHORT).show();
                 } else {
