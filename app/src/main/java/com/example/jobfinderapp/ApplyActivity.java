@@ -1,158 +1,137 @@
-package com.example.jobfinderapp;
+package com.example.jobfinderapp.activities;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.provider.OpenableColumns;
-import android.text.TextUtils;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.jobfinderapp.R;
+import com.example.jobfinderapp.database.DBHelper;
+import com.example.jobfinderapp.models.User;
 
 public class ApplyActivity extends AppCompatActivity {
 
     private ImageButton btnBack;
-    private TextView tvApplyJobName, tvCVStatus;
-    private EditText edtFullName, edtPhoneNumber, edtEmail;
-    private LinearLayout layoutUploadCV;
     private Button btnSubmitApply;
+    private EditText edtFullName, edtPhoneNumber, edtEmail;
+    private TextView tvApplyJobName, tvCVStatus;
+    private LinearLayout layoutUploadCV;
 
-    // Biến lưu trữ Uri của file thật sau khi chọn xong (dùng để gửi lên database/server sau này)
-    private Uri selectedFileUri = null;
-
-    // Bộ lắng nghe kết quả chọn file từ hệ thống điện thoại
-    private final ActivityResultLauncher<Intent> filePickerLauncher = registerForActivityResult(
-            new ActivityResultContracts.StartActivityForResult(),
-            result -> {
-                if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
-                    // Lấy đường dẫn (Uri) của file thật người dùng vừa chọn
-                    selectedFileUri = result.getData().getData();
-
-                    if (selectedFileUri != null) {
-                        // Lấy tên thật của file để hiển thị lên màn hình
-                        String fileName = getFileNameFromUri(selectedFileUri);
-                        tvCVStatus.setText("✅ Đã chọn: " + fileName);
-                        Toast.makeText(this, "Đã đính kèm file thành công!", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
-    );
+    private DBHelper dbHelper;
+    private int jobId = -1;
+    private int currentUserId = -1;
+    private boolean isCVSelected = false; // Biến cờ giả lập kiểm tra việc chọn CV
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_apply);
 
-        // 1. Ánh xạ các thành phần giao diện
+        dbHelper = new DBHelper(this);
+
+        // 1. Ánh xạ View từ file XML của Kiệt
         initViews();
 
-        // 2. Nhận tên công việc từ màn hình trước chuyển qua
-        String jobName = getIntent().getStringExtra("JOB_NAME_KEY");
-        if (!TextUtils.isEmpty(jobName)) {
-            tvApplyJobName.setText(jobName);
+        // 2. Đồng bộ User Session giống như trang Yêu thích của Giàu
+        SharedPreferences pref = getSharedPreferences("UserSession", MODE_PRIVATE);
+        currentUserId = pref.getInt("USER_ID", -1);
+        if (currentUserId == -1) {
+            currentUserId = 2; // Ép thử bằng Candidate mẫu "Nguyễn Văn A" nếu chạy test độc lập
         }
 
-        // 3. Nút quay lại
-        btnBack.setOnClickListener(v -> finish());
+        // 3. Nhận dữ liệu ID và Tiêu đề công việc chuyển tiếp từ màn hình JobDetailActivity sang
+        jobId = getIntent().getIntExtra("JOB_ID", -1);
+        String jobTitle = getIntent().getStringExtra("JOB_TITLE_KEY");
 
-        // 4. KẾT NỐI THẬT: Bấm vào vùng chọn CV sẽ mở bộ chọn tệp của điện thoại
-        layoutUploadCV.setOnClickListener(v -> openFilePicker());
+        if (jobTitle != null) {
+            tvApplyJobName.setText(jobTitle);
+        }
 
-        // 5. Nút gửi hồ sơ
-        btnSubmitApply.setOnClickListener(v -> validateAndSubmit());
+        // 4. Tự động điền trước thông tin cá nhân của User từ Database cho tiện
+        autoFillUserData();
+
+        // 5. Cài đặt các sự kiện nút bấm
+        setupClickListeners();
     }
 
     private void initViews() {
         btnBack = findViewById(R.id.btnBack);
-        tvApplyJobName = findViewById(R.id.tvApplyJobName);
-        tvCVStatus = findViewById(R.id.tvCVStatus);
+        btnSubmitApply = findViewById(R.id.btnSubmitApply);
         edtFullName = findViewById(R.id.edtFullName);
         edtPhoneNumber = findViewById(R.id.edtPhoneNumber);
         edtEmail = findViewById(R.id.edtEmail);
+        tvApplyJobName = findViewById(R.id.tvApplyJobName);
+        tvCVStatus = findViewById(R.id.tvCVStatus);
         layoutUploadCV = findViewById(R.id.layoutUploadCV);
-        btnSubmitApply = findViewById(R.id.btnSubmitApply);
     }
 
-    /**
-     * Hàm kích hoạt Trình quản lý tệp tin của hệ điều hành Android
-     */
-    private void openFilePicker() {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("*/*"); // Cho phép chọn mọi loại file
-
-        // Bạn có thể giới hạn chỉ chọn file tài liệu bằng mảng MIME types dưới đây:
-        String[] mimetypes = {"application/pdf", "application/msword",
-                "application/vnd.openxmlformats-officedocument.wordprocessingml.document"};
-        intent.putExtra(Intent.EXTRA_MIME_TYPES, mimetypes);
-
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-
-        // Mở màn hình chọn file
-        filePickerLauncher.launch(Intent.createChooser(intent, "Chọn file CV ứng tuyển"));
-    }
-
-    /**
-     * Hàm phụ trợ lấy tên file thật từ Uri hệ thống
-     */
-    private String getFileNameFromUri(Uri uri) {
-        String result = null;
-        if (uri.getScheme().equals("content")) {
-            try (Cursor cursor = getContentResolver().query(uri, null, null, null, null)) {
-                if (cursor != null && cursor.moveToFirst()) {
-                    int index = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME);
-                    if (index != -1) {
-                        result = cursor.getString(index);
-                    }
-                }
+    private void autoFillUserData() {
+        User user = dbHelper.getUserById(currentUserId);
+        if (user != null) {
+            edtFullName.setText(user.getFullname());
+            edtEmail.setText(user.getEmail());
+            if (user.getPhone() != null) {
+                edtPhoneNumber.setText(user.getPhone());
             }
         }
-        if (result == null) {
-            result = uri.getPath();
-            int cut = result.lastIndexOf('/');
-            if (cut != -1) {
-                result = result.substring(cut + 1);
-            }
-        }
-        return result;
     }
 
-    private void validateAndSubmit() {
-        String name = edtFullName.getText().toString().trim();
-        String phone = edtPhoneNumber.getText().toString().trim();
-        String email = edtEmail.getText().toString().trim();
+    private void setupClickListeners() {
+        // Sự kiện nhấn nút quay lại
+        btnBack.setOnClickListener(v -> finish());
 
-        if (TextUtils.isEmpty(name)) {
-            edtFullName.setError("Vui lòng nhập họ tên");
-            return;
-        }
-        if (TextUtils.isEmpty(phone)) {
-            edtPhoneNumber.setError("Vui lòng nhập số điện thoại");
-            return;
-        }
-        if (TextUtils.isEmpty(email)) {
-            edtEmail.setError("Vui lòng nhập địa chỉ email");
-            return;
-        }
+        // Sự kiện click vào khung chọn CV
+        layoutUploadCV.setOnClickListener(v -> {
+            // Giả lập hành động chọn file (Ở mức đồ án môn học, cập nhật UI để kiểm tra trước)
+            isCVSelected = true;
+            tvCVStatus.setText("✅ Đã chọn: My_CV_Profile.pdf");
+            tvCVStatus.setTextColor(getResources().getColor(android.R.color.holo_blue_dark));
+            Toast.makeText(this, "Chọn tệp CV thành công!", Toast.LENGTH_SHORT).show();
+        });
 
-        // Kiểm tra xem biến Uri có dữ liệu thật hay chưa
-        if (selectedFileUri == null) {
-            Toast.makeText(this, "Vui lòng chọn file CV thực tế từ máy của bạn!", Toast.LENGTH_LONG).show();
-            return;
-        }
+        // XỬ LÝ SỰ KIỆN GỬI HỒ SƠ ỨNG TUYỂN
+        btnSubmitApply.setOnClickListener(v -> {
+            String name = edtFullName.getText().toString().trim();
+            String phone = edtPhoneNumber.getText().toString().trim();
+            String email = edtEmail.getText().toString().trim();
 
-        // Thực tế: Biến `selectedFileUri` lúc này đang giữ file thật.
-        // Khi Leader Tấn Phát làm xong tầng Database/API, bạn chỉ cần truyền biến `selectedFileUri.toString()` vào là xong!
+            // Ràng buộc kiểm tra nhập liệu cơ bản
+            if (name.isEmpty() || phone.isEmpty() || email.isEmpty()) {
+                Toast.makeText(this, "Vui lòng nhập đầy đủ các trường thông tin bắt buộc (*)", Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-        Toast.makeText(this, "🎉 Nộp hồ sơ thành công với file CV thật!", Toast.LENGTH_LONG).show();
-        finish();
+            if (!isCVSelected) {
+                Toast.makeText(this, "Vui lòng bấm vào khung trên để đính kèm tệp CV!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (jobId == -1) {
+                Toast.makeText(this, "Lỗi: Không xác định được ID công việc ứng tuyển!", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Gọi hàm chèn bản ghi ứng tuyển vào SQLite của nhóm
+            boolean isApplied = dbHelper.applyJob(currentUserId, jobId);
+
+            if (isApplied) {
+                Toast.makeText(this, "🎉 Nộp hồ sơ ứng tuyển thành công!", Toast.LENGTH_LONG).show();
+
+                // (Tùy chọn) Thêm thông báo hệ thống tự động cho người dùng
+                dbHelper.addNotification(currentUserId, "Ứng tuyển thành công", "Bạn đã nộp đơn ứng tuyển cho vị trí " + tvApplyJobName.getText().toString());
+
+                finish(); // Đóng màn hình nộp đơn sau khi hoàn tất thành công
+            } else {
+                Toast.makeText(this, "Thao tác gửi đơn thất bại, vui lòng thử lại!", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

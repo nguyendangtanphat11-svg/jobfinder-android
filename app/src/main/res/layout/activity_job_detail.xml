@@ -6,7 +6,8 @@
     android:background="#F4F6F9"
     android:fitsSystemWindows="true">
 
-    <!-- 1. THANH TIÊU ĐỀ TRÊN CÙNG (CÓ KHOẢNG CÁCH CHỐNG BỊ CHE BỞI GIỜ HỆ THỐNG) -->
+    <!-- 1. THANH TIÊU ĐỀ TRÊN CÙNG (ĐÃ CẬP NHẬT THEO YÊU CẦU CỦA KIỆT) -->
+
     <RelativeLayout
         android:id="@+id/layoutHeader"
         android:layout_width="match_parent"
