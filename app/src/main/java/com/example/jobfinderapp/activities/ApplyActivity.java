@@ -98,37 +98,39 @@ public class ApplyActivity extends AppCompatActivity {
         });
 
         // XỬ LÝ SỰ KIỆN GỬI HỒ SƠ ỨNG TUYỂN
+        // XỬ LÝ SỰ KIỆN GỬI HỒ SƠ ỨNG TUYỂN
         btnSubmitApply.setOnClickListener(v -> {
             String name = edtFullName.getText().toString().trim();
             String phone = edtPhoneNumber.getText().toString().trim();
             String email = edtEmail.getText().toString().trim();
 
-            // Ràng buộc kiểm tra nhập liệu cơ bản
+            // 1. Ràng buộc kiểm tra nhập liệu cơ bản
             if (name.isEmpty() || phone.isEmpty() || email.isEmpty()) {
                 Toast.makeText(this, "Vui lòng nhập đầy đủ các trường thông tin bắt buộc (*)", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             if (!isCVSelected) {
-                Toast.makeText(this, "Vui lòng bấm vào khung trên để đính kèm tệp CV!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Vui lòng đính kèm tệp CV trước khi gửi!", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             if (jobId == -1) {
-                Toast.makeText(this, "Lỗi: Không xác định được ID công việc ứng tuyển!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Lỗi: Không xác định được công việc ứng tuyển!", Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            // Gọi hàm chèn bản ghi ứng tuyển vào SQLite của nhóm
+            // 2. Gọi hàm chèn bản ghi ứng tuyển vào bảng applications trong SQLite
             boolean isApplied = dbHelper.applyJob(currentUserId, jobId);
 
             if (isApplied) {
                 Toast.makeText(this, "🎉 Nộp hồ sơ ứng tuyển thành công!", Toast.LENGTH_LONG).show();
 
-                // (Tùy chọn) Thêm thông báo hệ thống tự động cho người dùng
+                // 3. Tự động thêm một thông báo hệ thống (Tùy chọn)
                 dbHelper.addNotification(currentUserId, "Ứng tuyển thành công", "Bạn đã nộp đơn ứng tuyển cho vị trí " + tvApplyJobName.getText().toString());
 
-                finish(); // Đóng màn hình nộp đơn sau khi hoàn tất thành công
+                // 5. Đóng màn hình nộp đơn hiện tại để khi từ trang Lịch sử bấm Back sẽ không bị quay lại trang điền form này nữa
+                finish();
             } else {
                 Toast.makeText(this, "Thao tác gửi đơn thất bại, vui lòng thử lại!", Toast.LENGTH_SHORT).show();
             }

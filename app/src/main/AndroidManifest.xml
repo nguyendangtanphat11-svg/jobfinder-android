@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -11,23 +13,84 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.JobFinderApp">
+
+        <!-- Employer Module Activities -->
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.EmployerDashboardActivity"
+            android:exported="false"
+            android:label="Dashboard Nhà tuyển dụng" />
+        <activity
+            android:name=".activities.ManageJobsActivity"
+            android:exported="false"
+            android:label="Quản lý tin tuyển dụng" />
+        <activity
+            android:name=".activities.AddJobActivity"
+            android:exported="false"
+            android:label="Đăng tin tuyển dụng" />
+        <activity
+            android:name=".activities.ManageApplicantsActivity"
+            android:exported="false"
+            android:label="Quản lý ứng viên" />
+        <activity
+            android:name=".activities.CompanyProfileActivity"
+            android:exported="false"
+            android:label="Hồ sơ công ty" />
+
+        <!-- Candidate Module Activities -->
+        <activity
+            android:name=".activities.EditProfileActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.ApplicationHistoryActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.NotificationActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.FavoriteActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.ProfileActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.ApplyActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.JobDetailActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.HomeActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".activities.RegisterActivity"
+            android:exported="false" />
+
+        <!-- Màn hình khởi động -->
+        <activity
+            android:name=".activities.LoginActivity"
             android:exported="true">
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+
         </activity>
+
+        <!-- MainActivity -->
         <activity
-            android:name=".JobDetailActivity"
-            android:exported="false"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name=".ApplyActivity"
-            android:exported="false"
-            android:windowSoftInputMode="adjustResize" />
+            android:name=".MainActivity"
+            android:exported="false" />
+
     </application>
 
 </manifest>

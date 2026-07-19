@@ -34,7 +34,7 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
 
         // Gán dữ liệu chữ
         holder.tvTitle.setText(job.getTitle());
-        holder.tvCompany.setText(job.getCompanyName());
+        holder.tvCompany.setText(job.getCompanyId());
         holder.tvSalary.setText(job.getSalary());
         holder.tvLocation.setText(job.getLocation());
 
@@ -61,9 +61,9 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
             // 2. Ánh xạ chính xác theo ID trong file XML của bạn
             tvTitle = itemView.findViewById(R.id.tvJobTitle);       // XML là tvJobTitle
             tvCompany = itemView.findViewById(R.id.tvCompanyName);   // XML là tvCompanyName
-            tvSalary = itemView.findViewById(R.id.tvSalary);        // XML là tvSalary
-            tvLocation = itemView.findViewById(R.id.tvLocation);    // XML là tvLocation
-            imgCompany = itemView.findViewById(R.id.ivCompanyLogo); // XML là ivCompanyLogo
+            tvSalary = itemView.findViewById(R.id.tvSalary);     // XML là tvJobSalary
+            tvLocation = itemView.findViewById(R.id.tvLocation); // XML là tvJobLocation
+            imgCompany = itemView.findViewById(R.id.imgCompanyLogo); // XML là imgCompanyLogo
         }
     }
 }
