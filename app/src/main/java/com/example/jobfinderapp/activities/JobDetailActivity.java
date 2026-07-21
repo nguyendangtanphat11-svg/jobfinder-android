@@ -1,152 +1,167 @@
 package com.example.jobfinderapp.activities;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageView;
+import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
-import com.bumptech.glide.Glide;
 import com.example.jobfinderapp.R;
 import com.example.jobfinderapp.database.DBHelper;
 import com.example.jobfinderapp.models.Job;
-import com.google.android.material.button.MaterialButton;
 
 public class JobDetailActivity extends AppCompatActivity {
 
-    private Toolbar toolbar;
-    private ImageView ivDetailLogo;
-    private TextView tvDetailTitle, tvDetailCompany, tvDetailSalary, tvDetailLocation, tvDetailDeadline, tvDetailDesc, tvDetailReq;
-    private MaterialButton btnDetailFavorite, btnApplyNow;
-    
+    // 1. Khai báo các thành phần giao diện (Views)
+    private ImageButton btnBack, btnFavorite;
+    private Button btnApplyNow;
+    private TextView tvJobName, tvCompanyName, tvJobSalary, tvJobGeneralInfo,
+            tvJobAddress, tvJobTime, tvJobDescription, tvJobRequirement, tvJobBenefits;
+
+    // 2. Khai báo Database và các biến bổ trợ luồng dữ liệu
     private DBHelper dbHelper;
-    private int jobId;
-    private int currentUserId;
+    private int jobId = -1;
+    private int currentUserId = 2; // Giả định ID ứng viên mẫu "Nguyễn Văn A" trong hệ thống database là 2
+    private boolean isSaved = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_job_detail);
-        
-        View mainView = findViewById(R.id.main);
-        if (mainView != null) {
-            ViewCompat.setOnApplyWindowInsetsListener(mainView, (v, insets) -> {
-                Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-                v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-                return insets;
-            });
+
+        initViews();
+        dbHelper = new DBHelper(this);
+
+        // BƯỚC ĐỒNG BỘ: Lấy đúng ID người dùng đang đăng nhập giống như FavoriteActivity
+        android.content.SharedPreferences pref = getSharedPreferences("UserSession", MODE_PRIVATE);
+        currentUserId = pref.getInt("USER_ID", -1);
+
+        // MẸO TEST: Nếu chưa làm chức năng Đăng nhập (ID trả về -1),
+        // ta ép tạm bằng 2 (Ứng viên Nguyễn Văn A có sẵn trong DBHelper) để chạy thử không bị lỗi.
+        if (currentUserId == -1) {
+            currentUserId = 2;
         }
 
-        dbHelper = new DBHelper(this);
+        // Nhận đúng nhãn JOB_ID từ JobAdapter của Phú gửi sang
         jobId = getIntent().getIntExtra("JOB_ID", -1);
 
-        SharedPreferences pref = getSharedPreferences("UserSession", MODE_PRIVATE);
-        currentUserId = pref.getInt("USER_ID", -1);
-        
-        initViews();
-        loadJobDetails();
-        setupEvents();
+        if (jobId != -1) {
+            loadJobDetails(jobId);
+            checkFavoriteStatus();
+        } else {
+            Toast.makeText(this, "Không tìm thấy thông tin công việc phù hợp!", Toast.LENGTH_SHORT).show();
+        }
+
+        setupClickListeners();
     }
 
     private void initViews() {
-        toolbar = findViewById(R.id.toolbar);
-        ivDetailLogo = findViewById(R.id.ivDetailLogo);
-        tvDetailTitle = findViewById(R.id.tvDetailTitle);
-        tvDetailCompany = findViewById(R.id.tvDetailCompany);
-        tvDetailSalary = findViewById(R.id.tvDetailSalary);
-        tvDetailLocation = findViewById(R.id.tvDetailLocation);
-        tvDetailDeadline = findViewById(R.id.tvDetailDeadline);
-        tvDetailDesc = findViewById(R.id.tvDetailDesc);
-        tvDetailReq = findViewById(R.id.tvDetailReq);
-        btnDetailFavorite = findViewById(R.id.btnDetailFavorite);
+        btnBack = findViewById(R.id.btnBack);
+        btnFavorite = findViewById(R.id.btnFavorite);
         btnApplyNow = findViewById(R.id.btnApplyNow);
 
-        setSupportActionBar(toolbar);
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setTitle("Chi tiết công việc");
-        }
-        toolbar.setNavigationOnClickListener(v -> finish());
+        tvJobName = findViewById(R.id.tvJobName);
+        tvCompanyName = findViewById(R.id.tvCompanyName);
+        tvJobSalary = findViewById(R.id.tvJobSalary);
+        tvJobGeneralInfo = findViewById(R.id.tvJobGeneralInfo);
+        tvJobAddress = findViewById(R.id.tvJobAddress); // Đã sửa từ tvJobLocation thành tvJobAddress khớp XML của Kiệt
+        tvJobTime = findViewById(R.id.tvJobTime);
+        tvJobDescription = findViewById(R.id.tvJobDescription);
+        tvJobRequirement = findViewById(R.id.tvJobRequirement);
+        tvJobBenefits = findViewById(R.id.tvJobBenefits);
     }
 
-    private void loadJobDetails() {
-        if (jobId == -1) {
-            Toast.makeText(this, "Không tìm thấy thông tin công việc", Toast.LENGTH_SHORT).show();
-            finish();
-            return;
-        }
+    private void loadJobDetails(int id) {
+        // Truy vấn dữ liệu thực tế từ bảng Jobs thông qua DBHelper
+        Job job = dbHelper.getJobById(id);
 
-        Job job = dbHelper.getJobById(jobId);
         if (job != null) {
-            tvDetailTitle.setText(job.getTitle());
-            tvDetailCompany.setText(job.getCompanyName());
-            tvDetailSalary.setText(job.getSalary());
-            tvDetailLocation.setText(job.getLocation());
-            tvDetailDeadline.setText(job.getDeadline());
-            tvDetailDesc.setText(job.getDescription());
-            tvDetailReq.setText(job.getRequirement());
+            // Đổ dữ liệu động lấy từ Database lên các thẻ giao diện
+            tvJobName.setText(job.getTitle());
+            tvCompanyName.setText(job.getCompanyName()); // Đã sửa khớp hàm getCompanyName() trong Job.java
+            tvJobSalary.setText(job.getSalary());
+            tvJobAddress.setText(job.getLocation()); // Lấy cột Location đổ vào TextView địa chỉ
 
-            Glide.with(this)
-                    .load(job.getCompanyLogo())
-                    .placeholder(R.mipmap.ic_launcher)
-                    .error(R.mipmap.ic_launcher)
-                    .into(ivDetailLogo);
-
-            updateFavoriteButton();
-        }
-    }
-
-    private void updateFavoriteButton() {
-        if (currentUserId != -1 && dbHelper.isFavorite(currentUserId, jobId)) {
-            btnDetailFavorite.setIconResource(android.R.drawable.btn_star_big_on);
-            btnDetailFavorite.setText("Đã yêu thích");
-        } else {
-            btnDetailFavorite.setIconResource(android.R.drawable.btn_star_big_off);
-            btnDetailFavorite.setText("Yêu thích");
-        }
-    }
-
-    private void setupEvents() {
-        btnDetailFavorite.setOnClickListener(v -> {
-            if (currentUserId == -1) {
-                Toast.makeText(this, "Vui lòng đăng nhập để thực hiện", Toast.LENGTH_SHORT).show();
-                return;
+            // Đổ tiếp dữ liệu văn bản cho các phần Mô tả & Yêu cầu công việc từ kho DB
+            if (job.getDescription() != null && !job.getDescription().isEmpty()) {
+                tvJobDescription.setText(job.getDescription());
             }
-            
-            boolean isFav = dbHelper.isFavorite(currentUserId, jobId);
-            boolean success = dbHelper.toggleFavorite(currentUserId, jobId);
-            if (success) {
-                updateFavoriteButton();
-                if (!isFav) {
-                    Job job = dbHelper.getJobById(jobId);
-                    String jobTitle = (job != null) ? job.getTitle() : "công việc";
-                    dbHelper.addNotification(currentUserId, "Đã thêm vào yêu thích", 
-                            "Đã thêm " + jobTitle + " vào danh sách yêu thích.");
-                    Toast.makeText(this, "Đã thêm vào yêu thích", Toast.LENGTH_SHORT).show();
+            if (job.getRequirement() != null && !job.getRequirement().isEmpty()) {
+                tvJobRequirement.setText(job.getRequirement());
+            }
+
+            // Bạn có thể giữ nguyên text mặc định trong XML cho các thẻ Thông tin chung / Thời gian / Quyền lợi
+            // nếu cấu trúc database của nhóm chưa hỗ trợ các cột này.
+        }
+    }
+
+    private void checkFavoriteStatus() {
+        // Gọi hàm isFavorite từ DBHelper của Leader để kiểm tra trạng thái lưu
+        isSaved = dbHelper.isFavorite(currentUserId, jobId);
+        if (isSaved) {
+            btnFavorite.setImageResource(android.R.drawable.btn_star_big_on); // Đổi icon thành Sao Vàng
+        } else {
+            btnFavorite.setImageResource(android.R.drawable.btn_star_big_off); // Đổi icon thành Sao Rỗng
+        }
+    }
+
+    private void setupClickListeners() {
+        // 1. Xử lý nút Mũi tên quay lại trang chủ (Góc trái trên cùng)
+        btnBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish(); // Đóng màn hình chi tiết hiện tại để quay về HomeActivity
+            }
+        });
+
+        // 2. Xử lý nút Ngôi sao Yêu thích (Đồng bộ trực tiếp SQLite cho màn hình FavoriteActivity)
+        // Xử lý nút Ngôi sao Yêu thích
+        btnFavorite.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (jobId == -1) {
+                    Toast.makeText(JobDetailActivity.this, "Không có ID công việc hợp lệ!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                // Gọi hàm toggle của nhóm viết trong DBHelper
+                boolean result = dbHelper.toggleFavorite(currentUserId, jobId);
+
+                if (result) {
+                    isSaved = !isSaved; // Đảo trạng thái hiển thị
+                    if (isSaved) {
+                        btnFavorite.setImageResource(android.R.drawable.btn_star_big_on);
+                        Toast.makeText(JobDetailActivity.this, "⭐ Đã thêm vào danh sách yêu thích!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        btnFavorite.setImageResource(android.R.drawable.btn_star_big_off);
+                        Toast.makeText(JobDetailActivity.this, "❌ Đã xóa khỏi danh sách yêu thích!", Toast.LENGTH_SHORT).show();
+                    }
                 } else {
-                    Toast.makeText(this, "Đã bỏ yêu thích", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(JobDetailActivity.this, "Thao tác thất bại, kiểm tra lại dữ liệu!", Toast.LENGTH_SHORT).show();
                 }
             }
         });
 
-        btnApplyNow.setOnClickListener(v -> {
-            if (currentUserId == -1) {
-                Toast.makeText(this, "Vui lòng đăng nhập để ứng tuyển", Toast.LENGTH_SHORT).show();
-                return;
+        // 3. Xử lý nút ỨNG TUYỂN NGAY chuyển tiếp sang màn hình hồ sơ ApplyActivity
+        // Xử lý nút ỨNG TUYỂN NGAY chuyển sang màn hình ApplyActivity
+        btnApplyNow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (jobId == -1) {
+                    Toast.makeText(JobDetailActivity.this, "Không tìm thấy ID công việc!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                Intent intent = new Intent(JobDetailActivity.this, ApplyActivity.class);
+                // Truyền ID công việc và User ID sang để màn hình ApplyActivity làm thủ tục nộp đơn
+                intent.putExtra("JOB_ID", jobId);
+                intent.putExtra("USER_ID", currentUserId);
+                intent.putExtra("JOB_TITLE_KEY", tvJobName.getText().toString());
+                startActivity(intent);
             }
-            Intent intent = new Intent(JobDetailActivity.this, ApplyActivity.class);
-            intent.putExtra("JOB_ID", jobId);
-            startActivity(intent);
         });
     }
 }

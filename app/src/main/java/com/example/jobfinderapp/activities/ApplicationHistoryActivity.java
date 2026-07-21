@@ -40,12 +40,12 @@ public class ApplicationHistoryActivity extends AppCompatActivity {
     }
 
     private void setupUser() {
-        String email = getIntent().getStringExtra("USER_EMAIL");
-        if (email != null) {
-            currentUserId = dbHelper.getUserIdByEmail(email);
-        } else {
-            // For development/demo purposes if no email is passed
-            currentUserId = 2; // Default to 'Sinh Viên A' from sample data
+        // Lấy ID người dùng từ SharedPreferences giống hệt bên trang ApplyActivity
+        android.content.SharedPreferences pref = getSharedPreferences("UserSession", MODE_PRIVATE);
+        currentUserId = pref.getInt("USER_ID", -1);
+
+        if (currentUserId == -1) {
+            currentUserId = 2; // Dự phòng lỗi nếu chưa đăng nhập
         }
     }
 
