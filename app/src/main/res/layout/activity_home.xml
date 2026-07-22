@@ -12,7 +12,6 @@
         android:layout_height="match_parent"
         android:fillViewport="true">
 
-        <!-- Thêm paddingBottom="80dp" để danh sách công việc không bị Thanh Menu che khuất -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -127,35 +126,40 @@
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
 
-                        <!-- Filter Khu vực -->
                         <Spinner
                             android:id="@+id/spinnerLocation"
                             android:layout_width="0dp"
-                            android:layout_height="36dp"
+                            android:layout_height="48dp"
                             android:layout_weight="1"
-                            android:background="@android:drawable/btn_dropdown" />
+                            android:background="@android:drawable/btn_dropdown"
+                            android:entries="@array/array_locations"
+                            android:paddingStart="4dp"
+                            android:spinnerMode="dropdown" />
 
                         <Space
                             android:layout_width="8dp"
                             android:layout_height="wrap_content" />
 
-                        <!-- Filter Mức lương -->
                         <Spinner
                             android:id="@+id/spinnerSalary"
                             android:layout_width="0dp"
-                            android:layout_height="36dp"
+                            android:layout_height="48dp"
                             android:layout_weight="1"
-                            android:background="@android:drawable/btn_dropdown" />
+                            android:background="@android:drawable/btn_dropdown"
+                            android:entries="@array/array_salaries"
+                            android:paddingStart="4dp"
+                            android:spinnerMode="dropdown" />
                     </LinearLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <!-- 3. SLIDER BANNER QUẢNG CÁO DOANH NGHIỆP -->
+            <!-- 3. SLIDER BANNER -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="140dp"
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginTop="16dp"
+                app:cardBackgroundColor="#EAEAEA"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="2dp">
 
@@ -165,7 +169,7 @@
                     android:layout_height="match_parent" />
             </androidx.cardview.widget.CardView>
 
-            <!-- 4. PHÂN LOẠI NGÀNH NGHỀ (CATEGORY GRID) -->
+            <!-- 4. PHÂN LOẠI NGÀNH NGHỀ -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -190,6 +194,7 @@
                     android:orientation="horizontal"
                     android:paddingHorizontal="16dp"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:itemCount="5"
                     tools:listitem="@layout/item_category" />
             </LinearLayout>
 
@@ -218,15 +223,14 @@
                     android:nestedScrollingEnabled="false"
                     android:paddingHorizontal="16dp"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:itemCount="3"
                     tools:listitem="@layout/item_job" />
             </LinearLayout>
 
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <!-- ======================================================== -->
-    <!-- 6. NÚT HỖ TRỢ NỔI (FAB) - Ghim cố định phía trên BottomNav -->
-    <!-- ======================================================== -->
+    <!-- 6. FAB & BOTTOM NAV -->
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
         android:id="@+id/fabSupport"
         android:layout_width="wrap_content"
@@ -240,9 +244,6 @@
         app:icon="@android:drawable/ic_menu_help"
         app:iconTint="#FFFFFF" />
 
-    <!-- ======================================================== -->
-    <!-- 7. THANH ĐIỀU HƯỚNG ĐÁY (BOTTOM NAVIGATION) - Ghim ở đáy  -->
-    <!-- ======================================================== -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"

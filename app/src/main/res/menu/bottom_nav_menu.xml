@@ -1,19 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+
     <item
         android:id="@+id/nav_home"
         android:icon="@android:drawable/ic_menu_compass"
         android:title="Trang chủ" />
-    <item
-        android:id="@+id/nav_applied"
-        android:icon="@android:drawable/ic_menu_agenda"
-        android:title="Đã ứng tuyển" />
+
     <item
         android:id="@+id/nav_favorite"
-        android:icon="@android:drawable/btn_star_big_on"
-        android:title="Đã lưu" />
+        android:icon="@android:drawable/btn_star"
+        android:title="Yêu thích" />
+
+    <!-- Thêm hoặc sửa lại đúng ID nav_history ở đây -->
+    <item
+        android:id="@+id/nav_history"
+        android:icon="@android:drawable/ic_menu_agenda"
+        android:title="Lịch sử" />
+
     <item
         android:id="@+id/nav_profile"
         android:icon="@android:drawable/ic_menu_myplaces"
         android:title="Tài khoản" />
+
 </menu>

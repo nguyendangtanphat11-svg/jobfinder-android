@@ -33,14 +33,24 @@ public class RegisterActivity extends AppCompatActivity {
         initViews();
         dbHelper = new DBHelper(this);
 
-        // Nút quay lại
-        ivBack.setOnClickListener(v -> finish());
+        // Nút X: Thoát thẳng về Trang chủ (HomeActivity)
+        if (ivBack != null) {
+            ivBack.setOnClickListener(v -> navigateToHome());
+        }
 
         // Chuyển sang màn hình đăng nhập
-        tvLogin.setOnClickListener(v -> finish());
+        if (tvLogin != null) {
+            tvLogin.setOnClickListener(v -> {
+                Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
+                startActivity(intent);
+                finish();
+            });
+        }
 
         // Xử lý đăng ký
-        btnRegister.setOnClickListener(v -> handleRegister());
+        if (btnRegister != null) {
+            btnRegister.setOnClickListener(v -> handleRegister());
+        }
     }
 
     private void initViews() {
@@ -52,6 +62,13 @@ public class RegisterActivity extends AppCompatActivity {
         rgRole = findViewById(R.id.rgRole);
         btnRegister = findViewById(R.id.btnRegister);
         tvLogin = findViewById(R.id.tvLogin);
+    }
+
+    private void navigateToHome() {
+        Intent intent = new Intent(RegisterActivity.this, HomeActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
+        finish();
     }
 
     private void handleRegister() {
@@ -66,7 +83,6 @@ public class RegisterActivity extends AppCompatActivity {
             role = "employer";
         }
 
-        // Validate dữ liệu
         if (TextUtils.isEmpty(fullName)) {
             etFullName.setError("Vui lòng nhập họ tên");
             return;
@@ -97,18 +113,15 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
 
-        // Kiểm tra email tồn tại
         if (dbHelper.checkEmailExists(email)) {
             Toast.makeText(this, "Email này đã được đăng ký", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Lưu vào SQLite
         boolean isInserted = dbHelper.insertUser(fullName, email, password, role);
 
         if (isInserted) {
             Toast.makeText(this, "Đăng ký tài khoản thành công!", Toast.LENGTH_SHORT).show();
-            // Chuyển sang Login
             Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
             startActivity(intent);
             finish();

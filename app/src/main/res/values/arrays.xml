@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="array_locations">
+        <item>Tất cả địa điểm</item>
+        <item>Quận 1, HCM</item>
+        <item>Quận 3, HCM</item>
+        <item>Bình Thạnh, HCM</item>
+        <item>Tân Bình, HCM</item>
+        <item>Thủ Đức, HCM</item>
+        <item>Hà Nội</item>
+        <item>Đà Nẵng</item>
+    </string-array>
+
+    <string-array name="array_salaries">
+        <item>Tất cả mức lương</item>
+        <item>Thỏa thuận</item>
+        <item>Dưới 5 triệu</item>
+        <item>5 - 7 triệu</item>
+        <item>7 - 10 triệu</item>
+        <item>10 - 15 triệu</item>
+        <item>Trên 15 triệu</item>
+    </string-array>
+</resources>
