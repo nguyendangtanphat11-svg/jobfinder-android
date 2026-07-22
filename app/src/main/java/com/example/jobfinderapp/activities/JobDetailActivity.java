@@ -1,7 +1,6 @@
 package com.example.jobfinderapp.activities;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
@@ -18,6 +17,7 @@ import androidx.core.view.WindowInsetsCompat;
 import com.bumptech.glide.Glide;
 import com.example.jobfinderapp.R;
 import com.example.jobfinderapp.database.DBHelper;
+import com.example.jobfinderapp.database.UserSession;
 import com.example.jobfinderapp.models.Job;
 import com.google.android.material.button.MaterialButton;
 
@@ -29,8 +29,8 @@ public class JobDetailActivity extends AppCompatActivity {
     private MaterialButton btnDetailFavorite, btnApplyNow;
 
     private DBHelper dbHelper;
+    private UserSession userSession;
     private int jobId;
-    private int currentUserId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,11 +47,11 @@ public class JobDetailActivity extends AppCompatActivity {
             });
         }
 
+        // Khởi tạo Database & Session
         dbHelper = new DBHelper(this);
-        jobId = getIntent().getIntExtra("JOB_ID", -1);
+        userSession = new UserSession(this);
 
-        SharedPreferences pref = getSharedPreferences("UserSession", MODE_PRIVATE);
-        currentUserId = pref.getInt("USER_ID", -1);
+        jobId = getIntent().getIntExtra("JOB_ID", -1);
 
         initViews();
         loadJobDetails();
@@ -89,7 +89,6 @@ public class JobDetailActivity extends AppCompatActivity {
         Job job = dbHelper.getJobById(jobId);
         if (job != null) {
             tvDetailTitle.setText(job.getTitle());
-            // Sử dụng các hàm đã đồng bộ từ class Job.java chung
             tvDetailCompany.setText(job.getCompanyName());
             tvDetailSalary.setText(job.getSalary());
             tvDetailLocation.setText(job.getLocation());
@@ -108,7 +107,8 @@ public class JobDetailActivity extends AppCompatActivity {
     }
 
     private void updateFavoriteButton() {
-        if (currentUserId != -1 && dbHelper.isFavorite(currentUserId, jobId)) {
+        // Chỉ cập nhật trạng thái Yêu thích nếu người dùng đã đăng nhập
+        if (userSession.isLoggedIn() && dbHelper.isFavorite(getCurrentUserId(), jobId)) {
             btnDetailFavorite.setIconResource(android.R.drawable.btn_star_big_on);
             btnDetailFavorite.setText("Đã yêu thích");
         } else {
@@ -118,12 +118,14 @@ public class JobDetailActivity extends AppCompatActivity {
     }
 
     private void setupEvents() {
+        // 1. Sự kiện bấm Nút Yêu thích
         btnDetailFavorite.setOnClickListener(v -> {
-            if (currentUserId == -1) {
-                Toast.makeText(this, "Vui lòng đăng nhập để thực hiện", Toast.LENGTH_SHORT).show();
+            if (!userSession.isLoggedIn()) {
+                redirectToLogin("Vui lòng đăng nhập để lưu công việc yêu thích!");
                 return;
             }
 
+            int currentUserId = getCurrentUserId();
             boolean isFav = dbHelper.isFavorite(currentUserId, jobId);
             boolean success = dbHelper.toggleFavorite(currentUserId, jobId);
             if (success) {
@@ -140,14 +142,28 @@ public class JobDetailActivity extends AppCompatActivity {
             }
         });
 
+        // 2. Sự kiện bấm Nút Ứng tuyển ngay
         btnApplyNow.setOnClickListener(v -> {
-            if (currentUserId == -1) {
-                Toast.makeText(this, "Vui lòng đăng nhập để ứng tuyển", Toast.LENGTH_SHORT).show();
+            if (!userSession.isLoggedIn()) {
+                redirectToLogin("Vui lòng đăng nhập để ứng tuyển!");
                 return;
             }
+
             Intent intent = new Intent(JobDetailActivity.this, ApplyActivity.class);
             intent.putExtra("JOB_ID", jobId);
             startActivity(intent);
         });
+    }
+
+    // Hàm tiện ích chuyển sang màn hình Đăng nhập
+    private void redirectToLogin(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(JobDetailActivity.this, LoginActivity.class);
+        startActivity(intent);
+    }
+
+    // Hàm hỗ trợ lấy ID người dùng từ SharedPreferences
+    private int getCurrentUserId() {
+        return getSharedPreferences("UserSessionPref", MODE_PRIVATE).getInt("UserId", -1);
     }
 }

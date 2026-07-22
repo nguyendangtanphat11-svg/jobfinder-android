@@ -1,51 +1,104 @@
 package com.example.jobfinderapp.models;
 
 public class Job {
-    private String id; // Thêm id để sửa lỗi cho ManageJobsActivity
+    private int id;
     private String title;
-    private String company;
-    private String salary;
+    private String companyName;
+    private String companyLogo;
     private String location;
-    private String imageUrl; // Thuộc tính mới để lưu link ảnh động
-    private String deadline;    // Thêm để sửa lỗi cho JobDetailActivity
-    private String description; // Thêm để sửa lỗi cho JobDetailActivity
-    private String requirement; // Thêm để sửa lỗi cho JobDetailActivity
+    private String salary;
+    private String jobType;
+    private String applyDate;
 
-    // Constructor đã được cập nhật thêm tham số imageUrl (Giữ nguyên của bạn)
-    public Job(String title, String company, String salary, String location, String imageUrl) {
+    // Các trường mở rộng
+    private String description;
+    private String requirement;
+    private String deadline;
+    private int categoryId;
+    private int companyId;
+    private String status;
+
+    // ==========================================
+    // CONSTRUCTORS
+    // ==========================================
+
+    // 1. Constructor rỗng
+    public Job() {}
+
+    // 2. Constructor nhận 5 tham số String (Khắc phục lỗi tạo object dạng mock data đơn giản)
+    public Job(String title, String companyName, String location, String salary, String jobType) {
         this.title = title;
-        this.company = company;
-        this.salary = salary;
+        this.companyName = companyName;
         this.location = location;
-        this.imageUrl = imageUrl;
+        this.salary = salary;
+        this.jobType = jobType;
     }
 
-    // --- CÁC HÀM GETTER ĐỂ ADAPTER VÀ ACTIVITY LẤY DỮ LIỆU ---
+    // 3. Constructor nhận 6 tham số String (Bao gồm Logo/Image)
+    public Job(String title, String companyName, String companyLogo, String location, String salary, String jobType) {
+        this.title = title;
+        this.companyName = companyName;
+        this.companyLogo = companyLogo;
+        this.location = location;
+        this.salary = salary;
+        this.jobType = jobType;
+    }
 
-    // Hàm này giúp ManageJobsActivity hết lỗi đỏ
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
+    // 4. Constructor đầy đủ các trường cơ bản với ID
+    public Job(int id, String title, String companyName, String companyLogo, String location, String salary, String jobType, String applyDate) {
+        this.id = id;
+        this.title = title;
+        this.companyName = companyName;
+        this.companyLogo = companyLogo;
+        this.location = location;
+        this.salary = salary;
+        this.jobType = jobType;
+        this.applyDate = applyDate;
+    }
+
+    // ==========================================
+    // GETTERS & SETTERS
+    // ==========================================
+
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
 
     public String getTitle() { return title; }
-    public String getCompany() { return company; }
+    public void setTitle(String title) { this.title = title; }
 
-    // Hàm này giúp JobDetailActivity hết lỗi ở dòng job.getCompanyName()
-    public String getCompanyName() { return company; }
+    public String getCompanyName() { return companyName; }
+    public void setCompanyName(String companyName) { this.companyName = companyName; }
+
+    public String getCompanyLogo() { return companyLogo; }
+    public void setCompanyLogo(String companyLogo) { this.companyLogo = companyLogo; }
+
+    public String getLocation() { return location; }
+    public void setLocation(String location) { this.location = location; }
 
     public String getSalary() { return salary; }
-    public String getLocation() { return location; }
-    public String getImageUrl() { return imageUrl; }
+    public void setSalary(String salary) { this.salary = salary; }
 
-    // Hàm này giúp JobDetailActivity hết lỗi ở dòng job.getCompanyLogo()
-    public String getCompanyLogo() { return imageUrl; }
+    public String getJobType() { return jobType; }
+    public void setJobType(String jobType) { this.jobType = jobType; }
 
-    // Các hàm dưới đây giúp JobDetailActivity hết lỗi phần thông tin chi tiết
-    public String getDeadline() { return deadline != null ? deadline : "Chưa cập nhật"; }
-    public void setDeadline(String deadline) { this.deadline = deadline; }
+    public String getApplyDate() { return applyDate; }
+    public void setApplyDate(String applyDate) { this.applyDate = applyDate; }
 
-    public String getDescription() { return description != null ? description : ""; }
+    public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
 
-    public String getRequirement() { return requirement != null ? requirement : ""; }
+    public String getRequirement() { return requirement; }
     public void setRequirement(String requirement) { this.requirement = requirement; }
+
+    public String getDeadline() { return deadline; }
+    public void setDeadline(String deadline) { this.deadline = deadline; }
+
+    public int getCategoryId() { return categoryId; }
+    public void setCategoryId(int categoryId) { this.categoryId = categoryId; }
+
+    public int getCompanyId() { return companyId; }
+    public void setCompanyId(int companyId) { this.companyId = companyId; }
+
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
 }

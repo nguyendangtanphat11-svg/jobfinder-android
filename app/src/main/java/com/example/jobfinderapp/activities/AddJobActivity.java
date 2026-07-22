@@ -28,7 +28,7 @@ public class AddJobActivity extends AppCompatActivity {
     private DBHelper dbHelper;
     private int jobId = -1;
     private int companyId;
-    private List<Category> categories;
+    private List<Category> categories = new ArrayList<>();
     private int selectedCategoryId = -1;
 
     @Override
@@ -42,12 +42,16 @@ public class AddJobActivity extends AppCompatActivity {
         SharedPreferences pref = getSharedPreferences("UserSession", MODE_PRIVATE);
         int userId = pref.getInt("USER_ID", -1);
         Company company = dbHelper.getCompanyByUserId(userId);
-        if (company != null) companyId = company.getId();
+        if (company != null) {
+            companyId = company.getId();
+        }
 
         initViews();
         setupToolbar();
+
+        // Cần tải danh mục trước khi đổ dữ liệu Job vào form
         setupCategorySpinner();
-        
+
         if (jobId != -1) {
             loadJobData();
             btnSave.setText("Cập nhật tin");
@@ -71,13 +75,17 @@ public class AddJobActivity extends AppCompatActivity {
         MaterialToolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(v -> finish());
-        if (jobId != -1) {
+        if (jobId != -1 && getSupportActionBar() != null) {
             getSupportActionBar().setTitle("Chỉnh sửa tin tuyển dụng");
         }
     }
 
     private void setupCategorySpinner() {
-        categories = dbHelper.getAllCategories();
+        List<Category> dbCategories = dbHelper.getAllCategories();
+        if (dbCategories != null) {
+            categories = dbCategories;
+        }
+
         List<String> categoryNames = new ArrayList<>();
         for (Category cat : categories) {
             categoryNames.add(cat.getName());
@@ -87,7 +95,9 @@ public class AddJobActivity extends AppCompatActivity {
         spinnerCategory.setAdapter(adapter);
 
         spinnerCategory.setOnItemClickListener((parent, view, position, id) -> {
-            selectedCategoryId = categories.get(position).getId();
+            if (position >= 0 && position < categories.size()) {
+                selectedCategoryId = categories.get(position).getId();
+            }
         });
     }
 
@@ -100,12 +110,15 @@ public class AddJobActivity extends AppCompatActivity {
             etDescription.setText(job.getDescription());
             etRequirement.setText(job.getRequirement());
             etDeadline.setText(job.getDeadline());
-            
+
             selectedCategoryId = job.getCategoryId();
-            for (Category cat : categories) {
-                if (cat.getId() == selectedCategoryId) {
-                    spinnerCategory.setText(cat.getName(), false);
-                    break;
+
+            if (categories != null) {
+                for (Category cat : categories) {
+                    if (cat.getId() == selectedCategoryId) {
+                        spinnerCategory.setText(cat.getName(), false);
+                        break;
+                    }
                 }
             }
         }
@@ -138,8 +151,14 @@ public class AddJobActivity extends AppCompatActivity {
         if (jobId == -1) {
             success = dbHelper.addJob(job);
         } else {
+            // Sửa lỗi truyền sai kiểu dữ liệu int sang String
             job.setId(jobId);
-            job.setStatus(dbHelper.getJobById(jobId).getStatus()); // Giữ nguyên trạng thái cũ
+
+            Job oldJob = dbHelper.getJobById(jobId);
+            if (oldJob != null) {
+                job.setStatus(oldJob.getStatus()); // Giữ nguyên trạng thái cũ
+            }
+
             success = dbHelper.updateJob(job);
         }
 

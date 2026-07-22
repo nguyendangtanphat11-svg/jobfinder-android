@@ -65,26 +65,24 @@
             android:name=".activities.JobDetailActivity"
             android:exported="false" />
 
+        <!-- 1. MÀN HÌNH KHỞI ĐỘNG CHÍNH: HomeActivity (Được bật lên đầu tiên) -->
         <activity
             android:name=".activities.HomeActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- 2. LoginActivity & RegisterActivity (Chỉ mở khi người dùng chủ động bấm Đăng nhập) -->
+        <activity
+            android:name=".activities.LoginActivity"
             android:exported="false" />
 
         <activity
             android:name=".activities.RegisterActivity"
             android:exported="false" />
-
-        <!-- Màn hình khởi động -->
-        <activity
-            android:name=".activities.LoginActivity"
-            android:exported="true">
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-
-        </activity>
 
         <!-- MainActivity -->
         <activity

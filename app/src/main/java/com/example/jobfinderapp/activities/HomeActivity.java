@@ -1,52 +1,69 @@
 package com.example.jobfinderapp.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.example.jobfinderapp.JobAdapter;
 import com.example.jobfinderapp.R;
+import com.example.jobfinderapp.database.UserSession;
 import com.example.jobfinderapp.models.Job;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
 
-    // Khai báo biến toàn cục để tránh lỗi đỏ "Cannot resolve symbol"
-    private RecyclerView rvFeaturedJobs;
+    private RecyclerView rvCategories;
     private RecyclerView rvRecentJobs;
+    private UserSession userSession;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        // Ánh xạ View từ XML layout
-        rvFeaturedJobs = findViewById(R.id.rvFeaturedJobs);
-        rvRecentJobs = findViewById(R.id.rvRecentJobs);
+        // Khởi tạo UserSession
+        userSession = new UserSession(this);
 
-        // Cài đặt LayoutManager hiển thị dạng danh sách cuộn dọc
-        rvFeaturedJobs.setLayoutManager(new LinearLayoutManager(this));
-        rvRecentJobs.setLayoutManager(new LinearLayoutManager(this));
+        // Ánh xạ RecyclerView an toàn
+        rvCategories = findViewById(R.id.rvCategories);
+        rvRecentJobs = findViewById(R.id.rvJobs);
 
-        // DANH SÁCH VIỆC LÀM NỔI BẬT (Đã thêm link URL ảnh demo tại tham số cuối)
-        List<Job> featuredJobsList = new ArrayList<>();
-        featuredJobsList.add(new Job("Android Developer Intern", "Công ty Công nghệ ABC", "💰 Thỏa thuận", "📍 Quận 1, HCM", "https://picsum.photos/200?random=1"));
-        featuredJobsList.add(new Job("Java Backend Intern", "Tập đoàn Giải pháp XYZ", "💰 5 - 7 Triệu", "📍 Bình Thạnh, HCM", "https://picsum.photos/200?random=2"));
-        featuredJobsList.add(new Job("UI/UX Design Intern", "Ví Điện Tử MoMo", "💰 Thỏa thuận", "📍 Quận 3, HCM", "https://picsum.photos/200?random=3"));
+        // 1. Cài đặt Danh sách Việc làm chính (rvJobs)
+        if (rvRecentJobs != null) {
+            rvRecentJobs.setLayoutManager(new LinearLayoutManager(this));
 
-        JobAdapter featuredAdapter = new JobAdapter(featuredJobsList);
-        rvFeaturedJobs.setAdapter(featuredAdapter);
+            List<Job> jobList = new ArrayList<>();
+            jobList.add(new Job("Android Developer Intern", "Công ty Công nghệ ABC", "Quận 1, HCM", "Thỏa thuận", "Thực tập"));
+            jobList.add(new Job("Java Backend Intern", "Tập đoàn Giải pháp XYZ", "Bình Thạnh, HCM", "5 - 7 Triệu", "Toàn thời gian"));
+            jobList.add(new Job("UI/UX Design Intern", "Ví Điện Tử MoMo", "Quận 3, HCM", "Thỏa thuận", "Thực tập"));
+            jobList.add(new Job("Frontend Web Intern", "VNG Campus", "Quận 7, HCM", "Lương cạnh tranh", "Toàn thời gian"));
+            jobList.add(new Job("Flutter Mobile Intern", "FPT Software", "Thủ Đức, HCM", "4 - 6 Triệu", "Thực tập"));
 
-        // DANH SÁCH VIỆC LÀM MỚI NHẤT (Đã thêm link URL ảnh demo tại tham số cuối)
-        List<Job> recentJobsList = new ArrayList<>();
-        recentJobsList.add(new Job("Frontend Web Intern", "VNG Campus", "💰 Lương cạnh tranh", "📍 Quận 7, HCM", "https://picsum.photos/200?random=4"));
-        recentJobsList.add(new Job("Flutter Mobile Intern", "FPT Software", "💰 4 - 6 Triệu", "📍 Thủ Đức, HCM", "https://picsum.photos/200?random=5"));
-        recentJobsList.add(new Job("Python Data Trainee", "TMA Solutions", "💰 5 Triệu", "📍 Phú Nhuận, HCM", "https://picsum.photos/200?random=6"));
-        recentJobsList.add(new Job("iOS Developer Intern", "VCCorp Group", "💰 Thỏa thuận", "📍 Cầu Giấy, HN", "https://picsum.photos/200?random=7"));
+            // Gọi Constructor 4 tham số chuẩn của bạn
+            // Ép kiểu null về Object Listener để Java nhận biết đúng Constructor
+            JobAdapter jobAdapter = new JobAdapter(this, jobList, -1, (JobAdapter.OnFavoriteClickListener) null);
+            rvRecentJobs.setAdapter(jobAdapter);
+        }
 
-        JobAdapter recentAdapter = new JobAdapter(recentJobsList);
-        rvRecentJobs.setAdapter(recentAdapter);
+        // 2. Cài đặt Danh mục / Nổi bật (rvCategories)
+        if (rvCategories != null) {
+            rvCategories.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+        }
+    }
+
+    public void checkAuthAndNavigate(Class<?> targetActivity) {
+        if (userSession != null && userSession.isLoggedIn()) {
+            Intent intent = new Intent(HomeActivity.this, targetActivity);
+            startActivity(intent);
+        } else {
+            Toast.makeText(this, "Vui lòng đăng nhập để sử dụng tính năng này!", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(HomeActivity.this, LoginActivity.class);
+            startActivity(intent);
+        }
     }
 }
