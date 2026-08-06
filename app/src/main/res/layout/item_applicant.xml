@@ -59,7 +59,7 @@
                 android:paddingHorizontal="8dp"
                 android:paddingVertical="4dp"
                 android:text="Đang chờ"
-                android:textColor="@color/primary_green"
+                android:textColor="@android:color/holo_orange_dark"
                 android:textSize="10sp" />
         </LinearLayout>
 
@@ -71,6 +71,20 @@
             android:text="Ứng tuyển vị trí: Android Developer"
             android:textColor="@color/black"
             android:textSize="14sp" />
+
+        <!-- Lời nhắn của ứng viên -->
+        <TextView
+            android:id="@+id/tvApplicantMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="#F5F5F5"
+            android:padding="8dp"
+            android:text="Lời nhắn: Tôi rất mong muốn được làm việc..."
+            android:textColor="#555555"
+            android:textSize="13sp"
+            android:fontStyle="italic"
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/tvApplyDate"
@@ -89,13 +103,14 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnViewCV"
-                style="@style/Widget.Material3.Button.TonalButton"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="4dp"
                 android:layout_weight="1"
                 android:text="Xem CV"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                app:icon="@android:drawable/ic_menu_view" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnAccept"
@@ -103,20 +118,21 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="4dp"
                 android:layout_weight="1"
-                android:text="Chấp nhận"
-                android:textSize="12sp" />
+                android:text="Duyệt"
+                android:textSize="12sp"
+                android:backgroundTint="#00B14F"/>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnReject"
-                style="@style/Widget.Material3.Button.OutlinedButton"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="4dp"
                 android:layout_weight="1"
                 android:text="Từ chối"
-                android:textColor="@color/error_color"
+                android:textColor="@android:color/holo_red_dark"
                 android:textSize="12sp"
-                app:strokeColor="@color/error_color" />
+                app:strokeColor="@android:color/holo_red_dark" />
 
         </LinearLayout>
 

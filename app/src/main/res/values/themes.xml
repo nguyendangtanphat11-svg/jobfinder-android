@@ -2,8 +2,9 @@
     <!-- Base application theme. -->
     <style name="Base.Theme.JobFinderApp" parent="Theme.Material3.DayNight.NoActionBar">
         <!-- Customize your light theme here. -->
-        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimary">@color/jf_primary</item><item name="colorSecondary">@color/jf_accent</item><item name="android:fontFamily">sans</item><item name="android:windowLightStatusBar">true</item><item name="android:statusBarColor">@color/jf_surface</item><item name="android:navigationBarColor">@color/jf_surface</item>
     </style>
 
     <style name="Theme.JobFinderApp" parent="Base.Theme.JobFinderApp" />
+    <style name="Theme.JobFinderApp.Splash" parent="Theme.Material3.DayNight.NoActionBar"><item name="android:windowNoTitle">true</item><item name="android:windowBackground">@drawable/bg_splash_gradient</item><item name="android:statusBarColor">@color/jf_primary_dark</item><item name="android:navigationBarColor">@color/jf_primary_dark</item><item name="android:windowLightStatusBar">false</item></style>
 </resources>

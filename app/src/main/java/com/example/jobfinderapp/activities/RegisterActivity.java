@@ -13,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.jobfinderapp.R;
 import com.example.jobfinderapp.database.DBHelper;
+import com.example.jobfinderapp.models.User;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -31,7 +32,8 @@ public class RegisterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_register);
 
         initViews();
-        dbHelper = new DBHelper(this);
+        // Sử dụng Singleton DBHelper
+        dbHelper = DBHelper.getInstance(this);
 
         // Nút quay lại
         ivBack.setOnClickListener(v -> finish());
@@ -56,14 +58,14 @@ public class RegisterActivity extends AppCompatActivity {
 
     private void handleRegister() {
         String fullName = etFullName.getText().toString().trim();
-        String email = etEmail.getText().toString().trim();
+        String email = DBHelper.normalizeEmail(etEmail.getText().toString());
         String password = etPassword.getText().toString().trim();
         String confirmPassword = etConfirmPassword.getText().toString().trim();
 
-        String role = "candidate";
+        String role = DBHelper.ROLE_CANDIDATE;
         int checkedId = rgRole.getCheckedRadioButtonId();
         if (checkedId == R.id.rbEmployer) {
-            role = "employer";
+            role = DBHelper.ROLE_EMPLOYER;
         }
 
         // Validate dữ liệu
@@ -104,7 +106,17 @@ public class RegisterActivity extends AppCompatActivity {
         }
 
         // Lưu vào SQLite
-        boolean isInserted = dbHelper.insertUser(fullName, email, password, role);
+        if (!DBHelper.ROLE_CANDIDATE.equals(role) && !DBHelper.ROLE_EMPLOYER.equals(role)) {
+            Toast.makeText(this, "Invalid registration role", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        User user = new User();
+        user.setFullname(fullName);
+        user.setEmail(email);
+        user.setPassword(password);
+        user.setRole(role);
+        boolean isInserted = dbHelper.insertUser(user) != -1;
 
         if (isInserted) {
             Toast.makeText(this, "Đăng ký tài khoản thành công!", Toast.LENGTH_SHORT).show();

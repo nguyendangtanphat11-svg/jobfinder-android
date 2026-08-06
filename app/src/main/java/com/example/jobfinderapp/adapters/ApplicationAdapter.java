@@ -16,61 +16,60 @@ import com.example.jobfinderapp.R;
 import com.example.jobfinderapp.activities.JobDetailActivity;
 import com.example.jobfinderapp.models.Job;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.ViewHolder> {
 
-    private Context context;
-    private List<Job> applicationList;
+    private final Context context;
+    private final List<Job> applicationList;
 
     public ApplicationAdapter(Context context, List<Job> applicationList) {
         this.context = context;
-        this.applicationList = applicationList;
+        this.applicationList = new ArrayList<>(applicationList);
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.item_application, parent, false);
-        return new ViewHolder(view);
+        return new ViewHolder(LayoutInflater.from(context).inflate(R.layout.item_application, parent, false));
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Job job = applicationList.get(position);
-        
-        holder.tvJobTitle.setText(job.getTitle());
-        holder.tvCompanyName.setText(job.getCompanyName());
-        holder.tvSalary.setText(job.getSalary());
-        holder.tvLocation.setText(job.getLocation());
-        holder.tvApplyDate.setText("Ngày ứng tuyển: " + job.getApplyDate());
-        holder.tvStatus.setText(job.getStatus());
+        holder.tvJobTitle.setText(valueOrFallback(job.getTitle(), context.getString(R.string.application_job_unavailable)));
+        holder.tvCompanyName.setText(valueOrFallback(job.getCompanyName(), context.getString(R.string.application_company_unavailable)));
+        holder.tvSalary.setText(valueOrFallback(job.getSalary(), context.getString(R.string.not_updated)));
+        holder.tvLocation.setText(valueOrFallback(job.getLocation(), context.getString(R.string.not_updated)));
+        holder.tvApplyDate.setText(context.getString(R.string.application_date_format,
+                valueOrFallback(job.getApplyDate(), context.getString(R.string.not_updated))));
 
-        // Set status background based on status text
-        String status = job.getStatus();
-        if (status != null) {
-            switch (status) {
-                case "Đã gửi":
-                    holder.tvStatus.setBackgroundResource(R.drawable.bg_status_sent);
-                    break;
-                case "Đang xét duyệt":
-                    holder.tvStatus.setBackgroundResource(R.drawable.bg_status_pending);
-                    break;
-                case "Đã nhận":
-                    holder.tvStatus.setBackgroundResource(R.drawable.bg_status_accepted);
-                    break;
-                case "Đã từ chối":
-                    holder.tvStatus.setBackgroundResource(R.drawable.bg_status_rejected);
-                    break;
-                default:
-                    holder.tvStatus.setBackgroundResource(R.drawable.bg_status_sent);
-                    break;
-            }
+        String status = normalizeStatus(job.getStatus());
+        holder.tvStatus.setText(status);
+        switch (status) {
+            case "Đang xem xét":
+                holder.tvStatus.setBackgroundResource(R.drawable.bg_application_status_reviewing);
+                holder.tvStatus.setTextColor(context.getColor(R.color.status_pending_text));
+                break;
+            case "Đã chấp nhận":
+                holder.tvStatus.setBackgroundResource(R.drawable.bg_application_status_accepted);
+                holder.tvStatus.setTextColor(context.getColor(R.color.status_accepted_text));
+                break;
+            case "Đã từ chối":
+                holder.tvStatus.setBackgroundResource(R.drawable.bg_application_status_rejected);
+                holder.tvStatus.setTextColor(context.getColor(R.color.status_rejected_text));
+                break;
+            default:
+                holder.tvStatus.setBackgroundResource(R.drawable.bg_application_status_waiting);
+                holder.tvStatus.setTextColor(context.getColor(R.color.status_sent_text));
+                break;
         }
 
         Glide.with(context)
                 .load(job.getCompanyLogo())
-                .placeholder(R.drawable.ic_launcher_background)
+.placeholder(R.drawable.ic_default_company)
+.error(R.drawable.ic_default_company)
                 .into(holder.ivCompanyLogo);
 
         holder.itemView.setOnClickListener(v -> {
@@ -85,11 +84,28 @@ public class ApplicationAdapter extends RecyclerView.Adapter<ApplicationAdapter.
         return applicationList.size();
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        ImageView ivCompanyLogo;
-        TextView tvJobTitle, tvCompanyName, tvSalary, tvLocation, tvApplyDate, tvStatus;
+    public void updateList(List<Job> jobs) {
+        applicationList.clear();
+        if (jobs != null) applicationList.addAll(jobs);
+        notifyDataSetChanged();
+    }
 
-        public ViewHolder(@NonNull View itemView) {
+    private String normalizeStatus(String status) {
+        if ("Đã gửi".equals(status)) return "Đang chờ";
+        if ("Đang xét duyệt".equals(status)) return "Đang xem xét";
+        if ("Đã nhận".equals(status)) return "Đã chấp nhận";
+        return status == null || status.trim().isEmpty() ? "Đang chờ" : status;
+    }
+
+    private String valueOrFallback(String value, String fallback) {
+        return value == null || value.trim().isEmpty() ? fallback : value;
+    }
+
+    static class ViewHolder extends RecyclerView.ViewHolder {
+        final ImageView ivCompanyLogo;
+        final TextView tvJobTitle, tvCompanyName, tvSalary, tvLocation, tvApplyDate, tvStatus;
+
+        ViewHolder(@NonNull View itemView) {
             super(itemView);
             ivCompanyLogo = itemView.findViewById(R.id.ivCompanyLogo);
             tvJobTitle = itemView.findViewById(R.id.tvJobTitle);

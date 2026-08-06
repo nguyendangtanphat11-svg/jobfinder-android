@@ -11,9 +11,18 @@ public class Job {
     private String requirement;
     private String deadline;
     
+    // New fields to sync with Job Detail
+    private String experience;
+    private String education;
+    private int quantity;
+    private String age;
+    private String jobType;
+    private String gender;
+
     // Extra fields for display
     private String companyName;
     private String companyLogo;
+    private String companyAddress;
     private String applyDate;
     private String status;
 
@@ -58,11 +67,32 @@ public class Job {
     public String getDeadline() { return deadline; }
     public void setDeadline(String deadline) { this.deadline = deadline; }
 
+    public String getExperience() { return experience; }
+    public void setExperience(String experience) { this.experience = experience; }
+
+    public String getEducation() { return education; }
+    public void setEducation(String education) { this.education = education; }
+
+    public int getQuantity() { return quantity; }
+    public void setQuantity(int quantity) { this.quantity = quantity; }
+
+    public String getAge() { return age; }
+    public void setAge(String age) { this.age = age; }
+
+    public String getJobType() { return jobType; }
+    public void setJobType(String jobType) { this.jobType = jobType; }
+
+    public String getGender() { return gender; }
+    public void setGender(String gender) { this.gender = gender; }
+
     public String getCompanyName() { return companyName; }
     public void setCompanyName(String companyName) { this.companyName = companyName; }
 
     public String getCompanyLogo() { return companyLogo; }
     public void setCompanyLogo(String companyLogo) { this.companyLogo = companyLogo; }
+
+    public String getCompanyAddress() { return companyAddress; }
+    public void setCompanyAddress(String companyAddress) { this.companyAddress = companyAddress; }
 
     public String getApplyDate() { return applyDate; }
     public void setApplyDate(String applyDate) { this.applyDate = applyDate; }

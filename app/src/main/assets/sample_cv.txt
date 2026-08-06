@@ -1,0 +1,43 @@
+HỌ VÀ TÊN: NGUYỄN VĂN A
+Vị trí ứng tuyển: Lập trình viên Android
+
+THÔNG TIN LIÊN HỆ:
+- Điện thoại: 0123 456 789
+- Email: nguyenvana@email.com
+- Địa chỉ: Quận 1, TP. Hồ Chí Minh
+- LinkedIn: linkedin.com/in/nguyenvana
+
+TÓM TẮT BẢN THÂN:
+Tôi là một lập trình viên Android nhiệt huyết với hơn 2 năm kinh nghiệm phát triển ứng dụng di động bằng Java và Kotlin. Có tư duy giải quyết vấn đề tốt và khả năng làm việc nhóm hiệu quả.
+
+KỸ NĂNG:
+- Ngôn ngữ: Java, Kotlin, Dart (Flutter)
+- Công nghệ: Android SDK, Jetpack Compose, Retrofit, Room, Firebase
+- Công cụ: Git, Android Studio, Figma
+- Ngoại ngữ: Tiếng Anh (Giao tiếp tốt)
+
+KINH NGHIỆM LÀM VIỆC:
+1. Công ty Công nghệ XYZ (01/2022 - Hiện tại)
+   Vị trí: Lập trình viên Android
+   - Phát triển và duy trì ứng dụng thương mại điện tử với hơn 100k lượt tải.
+   - Tối ưu hóa hiệu năng ứng dụng, giảm tỉ lệ crash xuống dưới 1%.
+   - Phối hợp với team Design để triển khai giao diện người dùng mượt mà.
+
+2. Startup ABC (06/2021 - 12/2021)
+   Vị trí: Thực tập sinh lập trình di động
+   - Tham gia xây dựng các tính năng cơ bản cho ứng dụng quản lý chi tiêu.
+   - Học hỏi quy trình phát triển phần mềm Agile/Scrum.
+
+HỌC VẤN:
+- Đại học Công nghệ Thông tin - ĐHQG TP.HCM (2017 - 2021)
+- Chuyên ngành: Kỹ thuật Phần mềm
+- GPA: 3.5/4.0
+
+DỰ ÁN CÁ NHÂN:
+- MyJobFinder: Ứng dụng tìm kiếm việc làm sử dụng SQLite và Firebase.
+- WeatherToday: Ứng dụng dự báo thời tiết tích hợp OpenWeatherMap API.
+
+SỞ THÍCH:
+- Đọc sách công nghệ
+- Tham gia các cuộc thi Hackathon
+- Chạy bộ và đá bóng

@@ -1,307 +1,108 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F4F6F9"
+    android:background="#F8F7FC"
     android:fitsSystemWindows="true">
 
-    <!-- 1. THANH TIÊU ĐỀ TRÊN CÙNG (ĐÃ CẬP NHẬT THEO YÊU CẦU CỦA KIỆT) -->
-
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/layoutHeader"
         android:layout_width="match_parent"
-        android:layout_height="88dp"
+        android:layout_height="64dp"
         android:background="@android:color/white"
-        android:elevation="4dp"
-        android:paddingHorizontal="16dp"
-        android:paddingTop="28dp">
+        android:elevation="12dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="8dp">
+        <ImageView android:id="@+id/btnClose" android:layout_width="48dp" android:layout_height="48dp" android:background="?attr/selectableItemBackgroundBorderless" android:clickable="true" android:contentDescription="Quay lại" android:focusable="true" android:padding="12dp" android:src="@drawable/ic_back" app:tint="#33204F" />
+        <TextView android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:text="Chi tiết việc làm" android:textColor="#2A174B" android:textSize="18sp" android:textStyle="bold" />
+    </LinearLayout>
 
-        <!-- Nút mũi tên quay lại trang chủ ở góc bên trái -->
-        <ImageButton
-            android:id="@+id/btnBack"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="8dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@android:drawable/ic_menu_revert"
-            android:contentDescription="Quay lại"
-            app:tint="#212F3F" />
-
-        <!-- Chữ tiêu đề JobDetail dịch qua bên phải màn hình -->
-        <TextView
-            android:id="@+id/tvAppLogo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="12dp"
-            android:text="JobDetail"
-            android:textColor="#00B14F"
-            android:textSize="22sp"
-            android:textStyle="bold" />
-    </RelativeLayout>
-
-    <!-- 2. VÙNG NỘI DUNG CUỘN TRƯỢT (SCROLLVIEW ĐỂ LĂN CHUỘT) -->
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/layoutHeader"
-        android:layout_above="@id/layoutBottomActions">
+        android:layout_marginTop="64dp"
+        android:layout_marginBottom="80dp"
+        android:clipToPadding="false"
+        android:fillViewport="true">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+        <FrameLayout android:layout_width="match_parent" android:layout_height="wrap_content">
+            <LinearLayout android:id="@+id/layoutContent" android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="16dp">
+                <com.google.android.material.card.MaterialCardView android:layout_width="match_parent" android:layout_height="wrap_content" app:cardBackgroundColor="@android:color/white" app:cardCornerRadius="20dp" app:cardElevation="2dp" app:strokeColor="#E8E2F1" app:strokeWidth="1dp">
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="20dp">
+                        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center_vertical" android:orientation="horizontal">
+                            <com.google.android.material.imageview.ShapeableImageView android:id="@+id/ivCompanyLogo" android:layout_width="64dp" android:layout_height="64dp" android:contentDescription="Logo công ty" android:scaleType="centerCrop" android:src="@mipmap/ic_launcher" app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Medium" />
+                            <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_marginStart="14dp" android:layout_weight="1" android:orientation="vertical">
+                                <TextView android:id="@+id/tvJobName" android:layout_width="match_parent" android:layout_height="wrap_content" android:ellipsize="end" android:maxLines="2" android:textColor="#28183F" android:textSize="21sp" android:textStyle="bold" />
+                                <TextView android:id="@+id/tvCompanyName" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="5dp" android:ellipsize="end" android:maxLines="1" android:textColor="#665B73" android:textSize="14sp" />
+                            </LinearLayout>
+                        </LinearLayout>
+                        <TextView android:id="@+id/tvJobStatus" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="16dp" android:background="#F0EBFC" android:paddingHorizontal="10dp" android:paddingVertical="5dp" android:textColor="#5E32A5" android:textSize="12sp" android:textStyle="bold" />
+                        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="14dp" android:orientation="horizontal">
+                            <TextView android:id="@+id/tvJobSalary" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:background="#F0EBFC" android:ellipsize="end" android:maxLines="1" android:padding="10dp" android:textColor="#5E32A5" android:textSize="13sp" android:textStyle="bold" />
+                            <TextView android:id="@+id/tvJobLocation" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_marginStart="8dp" android:layout_weight="1" android:background="#F3F0F7" android:ellipsize="end" android:maxLines="1" android:padding="10dp" android:textColor="#5F5569" android:textSize="13sp" />
+                        </LinearLayout>
+                        <TextView android:id="@+id/tvJobType" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="10dp" android:background="#F3F0F7" android:paddingHorizontal="10dp" android:paddingVertical="5dp" android:textColor="#5F5569" android:textSize="12sp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
 
-            <!-- THẺ 1: Thông tin tiêu đề công việc -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/white"
-                android:elevation="2dp"
-                android:orientation="vertical"
-                android:padding="16dp"
-                android:layout_marginBottom="12dp">
+                <com.google.android.material.card.MaterialCardView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="14dp" app:cardBackgroundColor="@android:color/white" app:cardCornerRadius="18dp" app:cardElevation="0dp" app:strokeColor="#E8E2F1" app:strokeWidth="1dp">
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="18dp">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Thông tin tổng quan" android:textColor="#2A174B" android:textSize="17sp" android:textStyle="bold" />
+                        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="14dp" android:text="Kinh nghiệm" android:textColor="#7B7185" android:textSize="12sp" />
+                        <TextView android:id="@+id/tvJobExperience" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="#31243F" android:textSize="15sp" />
+                        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:text="Học vấn • Số lượng • Độ tuổi • Giới tính" android:textColor="#7B7185" android:textSize="12sp" />
+                        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="5dp" android:orientation="horizontal">
+                            <TextView android:id="@+id/tvEducation" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:textColor="#31243F" android:textSize="14sp" />
+                            <TextView android:id="@+id/tvQuantity" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="#31243F" android:textSize="14sp" />
+                        </LinearLayout>
+                        <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="6dp" android:orientation="horizontal">
+                            <TextView android:id="@+id/tvAge" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:textColor="#31243F" android:textSize="14sp" />
+                            <TextView android:id="@+id/tvGender" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="#31243F" android:textSize="14sp" />
+                        </LinearLayout>
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
 
-                <TextView
-                    android:id="@+id/tvJobName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Kế Toán Trưởng Thu Nhập 25tr/Tháng"
-                    android:textColor="#212F3F"
-                    android:textSize="20sp"
-                    android:textStyle="bold" />
+                <com.google.android.material.card.MaterialCardView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="14dp" app:cardBackgroundColor="@android:color/white" app:cardCornerRadius="18dp" app:cardElevation="0dp" app:strokeColor="#E8E2F1" app:strokeWidth="1dp">
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="18dp">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Mô tả công việc" android:textColor="#2A174B" android:textSize="17sp" android:textStyle="bold" />
+                        <TextView android:id="@+id/tvJobDescription" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="10dp" android:lineSpacingExtra="4dp" android:textColor="#554B60" android:textSize="15sp" />
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="18dp" android:text="Yêu cầu ứng viên" android:textColor="#2A174B" android:textSize="17sp" android:textStyle="bold" />
+                        <TextView android:id="@+id/tvRequirement" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="10dp" android:lineSpacingExtra="4dp" android:textColor="#554B60" android:textSize="15sp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
 
-                <TextView
-                    android:id="@+id/tvCompanyName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:text="Công ty TNHH Thiên Phong Logitex"
-                    android:textColor="#556270"
-                    android:textSize="16sp" />
+                <com.google.android.material.card.MaterialCardView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="14dp" app:cardBackgroundColor="@android:color/white" app:cardCornerRadius="18dp" app:cardElevation="0dp" app:strokeColor="#E8E2F1" app:strokeWidth="1dp">
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="18dp">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Địa điểm và công ty" android:textColor="#2A174B" android:textSize="17sp" android:textStyle="bold" />
+                        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:text="Địa điểm làm việc" android:textColor="#7B7185" android:textSize="12sp" />
+                        <TextView android:id="@+id/tvJobAddress" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="#31243F" android:textSize="15sp" />
+                        <TextView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:text="Địa chỉ công ty" android:textColor="#7B7185" android:textSize="12sp" />
+                        <TextView android:id="@+id/tvCompanyAddress" android:layout_width="match_parent" android:layout_height="wrap_content" android:textColor="#31243F" android:textSize="15sp" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
 
-                <TextView
-                    android:id="@+id/tvJobSalary"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:text="20 - 25 triệu"
-                    android:textColor="#00B14F"
-                    android:textSize="18sp"
-                    android:textStyle="bold" />
+                <com.google.android.material.card.MaterialCardView android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="14dp" android:layout_marginBottom="8dp" app:cardBackgroundColor="#F0EBFC" app:cardCornerRadius="18dp" app:cardElevation="0dp">
+                    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical" android:padding="18dp">
+                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Hạn ứng tuyển" android:textColor="#5D32A2" android:textSize="13sp" android:textStyle="bold" />
+                        <TextView android:id="@+id/tvDeadline" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:textColor="#2A174B" android:textSize="16sp" android:textStyle="bold" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
             </LinearLayout>
 
-            <!-- THẺ 2: Thông tin chung bổ sung -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/white"
-                android:elevation="2dp"
-                android:orientation="vertical"
-                android:padding="16dp"
-                android:layout_marginBottom="12dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="ℹ️ Thông tin chung"
-                    android:textColor="#212F3F"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tvJobGeneralInfo"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:text="- Cấp bậc: Trưởng phòng\n- Kinh nghiệm: Trên 5 năm\n- Số lượng tuyển: 01 người\n- Giới tính: Không yêu cầu"
-                    android:textColor="#4A5568"
-                    android:textSize="14sp"
-                    android:lineSpacingMultiplier="1.2"/>
+            <LinearLayout android:id="@+id/layoutLoading" android:layout_width="match_parent" android:layout_height="260dp" android:gravity="center" android:orientation="vertical" android:visibility="gone">
+                <ProgressBar android:layout_width="48dp" android:layout_height="48dp" android:indeterminateTint="#622FB5" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="10dp" android:text="Đang tải công việc..." android:textColor="#665B73" />
             </LinearLayout>
-
-            <!-- THẺ 3: Địa điểm làm việc -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/white"
-                android:elevation="2dp"
-                android:orientation="vertical"
-                android:padding="16dp"
-                android:layout_marginBottom="12dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="📍 Địa điểm làm việc"
-                    android:textColor="#212F3F"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tvJobAddress"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:text="Khu công nghiệp, Thành phố Tây Ninh, Tỉnh Tây Ninh"
-                    android:textColor="#4A5568"
-                    android:textSize="14sp"
-                    android:lineSpacingMultiplier="1.2"/>
+            <LinearLayout android:id="@+id/layoutError" android:layout_width="match_parent" android:layout_height="260dp" android:gravity="center" android:orientation="vertical" android:padding="32dp" android:visibility="gone">
+                <TextView android:id="@+id/tvError" android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center" android:textColor="#665B73" android:textSize="16sp" />
             </LinearLayout>
-
-            <!-- THẺ 4: Thời gian làm việc -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/white"
-                android:elevation="2dp"
-                android:orientation="vertical"
-                android:padding="16dp"
-                android:layout_marginBottom="12dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="⏰ Thời gian làm việc"
-                    android:textColor="#212F3F"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tvJobTime"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:text="- Thứ 2 - Thứ 6: Sáng 8:00 - 12:00, Chiều 13:30 - 17:30\n- Thứ 7: Sáng làm việc, Chiều nghỉ."
-                    android:textColor="#4A5568"
-                    android:textSize="14sp"
-                    android:lineSpacingMultiplier="1.2"/>
-            </LinearLayout>
-
-            <!-- THẺ 5: Mô tả công việc -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/white"
-                android:elevation="2dp"
-                android:orientation="vertical"
-                android:padding="16dp"
-                android:layout_marginBottom="12dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="📝 Mô tả công việc"
-                    android:textColor="#212F3F"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tvJobDescription"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:text="- Tổ chức hệ thống kế toán doanh nghiệp và trực tiếp chỉ đạo bộ phận.\n- Kiểm tra, giám sát các khoản thu/chi tài chính, công nợ.\n- Lập báo cáo tài chính định kỳ theo quy định pháp luật."
-                    android:textColor="#4A5568"
-                    android:textSize="14sp"
-                    android:lineSpacingMultiplier="1.2"/>
-            </LinearLayout>
-
-            <!-- THẺ 6: Yêu cầu ứng viên -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/white"
-                android:elevation="2dp"
-                android:orientation="vertical"
-                android:padding="16dp"
-                android:layout_marginBottom="12dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="📋 Yêu cầu ứng viên"
-                    android:textColor="#212F3F"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tvJobRequirement"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:text="- Tốt nghiệp Đại học chuyên ngành Kế toán / Kiểm toán / Tài chính.\n- Có tối thiểu 5 năm kinh nghiệm làm việc ở vị trí tương đương.\n- Nắm vững các quy định pháp luật về Thuế và Kế toán doanh nghiệp."
-                    android:textColor="#4A5568"
-                    android:textSize="14sp"
-                    android:lineSpacingMultiplier="1.2"/>
-            </LinearLayout>
-
-            <!-- THẺ 7: Quyền lợi được hưởng -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@android:color/white"
-                android:elevation="2dp"
-                android:orientation="vertical"
-                android:padding="16dp"
-                android:layout_marginBottom="16dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="🎁 Quyền lợi được hưởng"
-                    android:textColor="#212F3F"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tvJobBenefits"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:text="- Lương tháng 13 + Thưởng hiệu quả công việc định kỳ.\n- Tham gia đầy đủ BHXH, BHYT, BHTN theo luật định.\n- Được tham gia các khóa đào tạo nâng cao năng lực quản lý.\n- Du lịch nghỉ mát hàng năm cùng công ty."
-                    android:textColor="#4A5568"
-                    android:textSize="14sp"
-                    android:lineSpacingMultiplier="1.2"/>
-            </LinearLayout>
-
-        </LinearLayout>
+        </FrameLayout>
     </androidx.core.widget.NestedScrollView>
 
-    <!-- 3. THANH NÚT BẤM CỐ ĐỊNH Ở ĐÁY (ỨNG TUYỂN / LƯU VIỆC) -->
-    <LinearLayout
-        android:id="@+id/layoutBottomActions"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="@android:color/white"
-        android:elevation="8dp"
-        android:orientation="horizontal"
-        android:padding="12dp">
-
-        <ImageButton
-            android:id="@+id/btnFavorite"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:src="@android:drawable/btn_star_big_off"
-            android:contentDescription="Lưu việc làm" />
-
-        <Button
-            android:id="@+id/btnApplyNow"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:layout_marginStart="12dp"
-            android:backgroundTint="#00B14F"
-            android:text="ỨNG TUYỂN NGAY"
-            android:textColor="@android:color/white"
-            android:textStyle="bold"
-            android:textSize="16sp" />
+    <LinearLayout android:layout_width="match_parent" android:layout_height="80dp" android:layout_gravity="bottom" android:background="@android:color/white" android:elevation="10dp" android:gravity="center_vertical" android:orientation="horizontal" android:paddingHorizontal="16dp">
+        <ImageView android:id="@+id/btnFavorite" android:layout_width="52dp" android:layout_height="52dp" android:background="#F0EBFC" android:clickable="true" android:contentDescription="Lưu việc làm" android:focusable="true" android:padding="13dp" android:src="@android:drawable/btn_star_big_off" app:tint="#622FB5" />
+        <com.google.android.material.button.MaterialButton android:id="@+id/btnApplyNow" android:layout_width="0dp" android:layout_height="52dp" android:layout_marginStart="12dp" android:layout_weight="1" android:text="Ứng tuyển ngay" android:textAllCaps="false" android:textSize="16sp" android:textStyle="bold" app:backgroundTint="#622FB5" app:cornerRadius="14dp" />
     </LinearLayout>
-
-</RelativeLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

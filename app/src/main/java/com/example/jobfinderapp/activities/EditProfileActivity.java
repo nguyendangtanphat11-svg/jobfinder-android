@@ -28,7 +28,7 @@ public class EditProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_profile);
 
-        dbHelper = new DBHelper(this);
+        dbHelper = DBHelper.getInstance(this);
         userId = getIntent().getIntExtra("USER_ID", -1);
 
         if (userId == -1) {
@@ -81,7 +81,9 @@ public class EditProfileActivity extends AppCompatActivity {
     private void setupEvents() {
         btnSaveProfile.setOnClickListener(v -> saveProfile());
         
-        findViewById(R.id.toolbar).setOnClickListener(v -> finish());
+        // Toolbar navigation icon consumes its own touch event, so use the dedicated listener.
+        ((com.google.android.material.appbar.MaterialToolbar) findViewById(R.id.toolbar))
+                .setNavigationOnClickListener(v -> finish());
         
         // Cập nhật ảnh preview khi URL thay đổi
         etAvatarUrl.setOnFocusChangeListener((v, hasFocus) -> {

@@ -8,12 +8,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.bumptech.glide.Glide; // Import thư viện Glide để load ảnh động từ mạng
+import com.bumptech.glide.Glide;
 import com.example.jobfinderapp.models.Job;
 
 import java.util.List;
 
-public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
+public class    JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
 
     private List<Job> jobList;
 
@@ -34,16 +34,16 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
 
         // Gán dữ liệu chữ
         holder.tvTitle.setText(job.getTitle());
-        holder.tvCompany.setText(job.getCompanyId());
+        holder.tvCompany.setText(job.getCompanyName());
         holder.tvSalary.setText(job.getSalary());
         holder.tvLocation.setText(job.getLocation());
 
-        // XỬ LÝ ĐỔ ẢNH ĐỘNG TỪ URL: Tự động thay đổi ảnh theo từng item công việc
+        // XỬ LÝ ĐỔ ẢNH ĐỘNG TỪ URL
         Glide.with(holder.itemView.getContext())
-                .load(job.getCompanyLogo()) // Lấy link ảnh động từ Object Job hiện tại
-                .placeholder(android.R.color.darker_gray) // Hiển thị màu xám khi đang tải
-                .error(android.R.drawable.ic_menu_gallery) // Hiển thị ảnh mặc định nếu link lỗi
-                .into(holder.imgCompany); // Đổ trực tiếp vào ImageView
+                .load(job.getCompanyLogo())
+                .placeholder(android.R.color.darker_gray)
+                .error(android.R.drawable.ic_menu_gallery)
+                .into(holder.imgCompany);
     }
 
     @Override
@@ -52,18 +52,16 @@ public class JobAdapter extends RecyclerView.Adapter<JobAdapter.JobViewHolder> {
     }
 
     public static class JobViewHolder extends RecyclerView.ViewHolder {
-        // 1. Thay đổi khai báo tên biến cho đồng bộ (hoặc giữ nguyên biến cũ nhưng ánh xạ đúng ID)
         TextView tvTitle, tvCompany, tvSalary, tvLocation;
         ImageView imgCompany;
 
         public JobViewHolder(@NonNull View itemView) {
             super(itemView);
-            // 2. Ánh xạ chính xác theo ID trong file XML của bạn
-            tvTitle = itemView.findViewById(R.id.tvJobTitle);       // XML là tvJobTitle
-            tvCompany = itemView.findViewById(R.id.tvCompanyName);   // XML là tvCompanyName
-            tvSalary = itemView.findViewById(R.id.tvSalary);     // XML là tvJobSalary
-            tvLocation = itemView.findViewById(R.id.tvLocation); // XML là tvJobLocation
-            imgCompany = itemView.findViewById(R.id.imgCompanyLogo); // XML là imgCompanyLogo
+            tvTitle = itemView.findViewById(R.id.tvJobTitle);
+            tvCompany = itemView.findViewById(R.id.tvCompanyName);
+            tvSalary = itemView.findViewById(R.id.tvSalary);
+            tvLocation = itemView.findViewById(R.id.tvLocation);
+            imgCompany = itemView.findViewById(R.id.ivCompanyLogo);
         }
     }
 }

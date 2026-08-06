@@ -1,97 +1,20 @@
 package com.example.jobfinderapp.activities;
 
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.widget.TextView;
-import android.widget.Toast;
-
+import android.content.Intent; import android.graphics.Color; import android.os.Bundle; import android.text.TextUtils; import android.view.View; import android.widget.ImageView; import android.widget.LinearLayout; import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.example.jobfinderapp.R;
-import com.example.jobfinderapp.database.DBHelper;
-import com.example.jobfinderapp.models.Company;
-import com.google.android.material.button.MaterialButton;
-import com.google.android.material.card.MaterialCardView;
-
-import java.util.Map;
+import com.bumptech.glide.Glide; import com.example.jobfinderapp.R; import com.example.jobfinderapp.database.DBHelper; import com.example.jobfinderapp.models.Company; import com.example.jobfinderapp.models.Job; import com.example.jobfinderapp.models.User; import com.example.jobfinderapp.utils.UserSession; import com.google.android.material.button.MaterialButton; import com.google.android.material.dialog.MaterialAlertDialogBuilder; import com.google.android.material.progressindicator.LinearProgressIndicator; import java.util.List; import java.util.Map;
 
 public class EmployerDashboardActivity extends AppCompatActivity {
-
-    private TextView tvCompanyName, tvTotalJobs, tvTotalApplicants, tvActiveJobs;
-    private MaterialCardView btnManageJobs, btnManageApplicants, btnCompanyProfile;
-    private MaterialButton btnLogout;
-    private DBHelper dbHelper;
-    private int currentUserId;
-    private Company company;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        
-        // Kiểm tra quyền truy cập (Employer only)
-        SharedPreferences pref = getSharedPreferences("UserSession", MODE_PRIVATE);
-        String role = pref.getString("USER_ROLE", "");
-        if (!"employer".equals(role)) {
-            Toast.makeText(this, "Bạn không có quyền truy cập trang này", Toast.LENGTH_SHORT).show();
-            startActivity(new Intent(this, LoginActivity.class));
-            finish();
-            return;
-        }
-
-        setContentView(R.layout.activity_employer_dashboard);
-
-        dbHelper = new DBHelper(this);
-        currentUserId = pref.getInt("USER_ID", -1);
-
-        if (currentUserId == -1) {
-            Toast.makeText(this, "Vui lòng đăng nhập lại", Toast.LENGTH_SHORT).show();
-            finish();
-            return;
-        }
-
-        initViews();
-        setupEvents();
-        loadDashboardData();
-    }
-
-    private void initViews() {
-        tvCompanyName = findViewById(R.id.tvCompanyName);
-        tvTotalJobs = findViewById(R.id.tvTotalJobs);
-        tvTotalApplicants = findViewById(R.id.tvTotalApplicants);
-        tvActiveJobs = findViewById(R.id.tvActiveJobs);
-        btnManageJobs = findViewById(R.id.btnManageJobs);
-        btnManageApplicants = findViewById(R.id.btnManageApplicants);
-        btnCompanyProfile = findViewById(R.id.btnCompanyProfile);
-        btnLogout = findViewById(R.id.btnLogoutEmployer);
-    }
-
-    private void setupEvents() {
-        btnManageJobs.setOnClickListener(v -> startActivity(new Intent(this, ManageJobsActivity.class)));
-        btnManageApplicants.setOnClickListener(v -> startActivity(new Intent(this, ManageApplicantsActivity.class)));
-        btnCompanyProfile.setOnClickListener(v -> startActivity(new Intent(this, CompanyProfileActivity.class)));
-        btnLogout.setOnClickListener(v -> {
-            SharedPreferences pref = getSharedPreferences("UserSession", MODE_PRIVATE);
-            pref.edit().clear().apply();
-            startActivity(new Intent(this, LoginActivity.class));
-            finishAffinity();
-        });
-    }
-
-    private void loadDashboardData() {
-        company = dbHelper.getCompanyByUserId(currentUserId);
-        if (company != null) {
-            tvCompanyName.setText(company.getName());
-            Map<String, Integer> stats = dbHelper.getEmployerStats(company.getId());
-            tvTotalJobs.setText(String.valueOf(stats.getOrDefault("total_jobs", 0)));
-            tvTotalApplicants.setText(String.valueOf(stats.getOrDefault("total_applicants", 0)));
-            tvActiveJobs.setText(String.valueOf(stats.getOrDefault("active_jobs", 0)));
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        loadDashboardData();
-    }
+ private DBHelper db; private UserSession session; private int userId; private User employer; private Company company;
+ @Override public void onCreate(Bundle b){super.onCreate(b);getWindow().setStatusBarColor(Color.parseColor("#35208C"));getWindow().getDecorView().setSystemUiVisibility(0);db=DBHelper.getInstance(this);session=new UserSession(this);if(!validateEmployerSession())return;setContentView(R.layout.activity_employer_dashboard);setupQuickActions();refresh();}
+ @Override protected void onResume(){super.onResume();if(employer!=null&&validateEmployerSession())refresh();}
+ private boolean validateEmployerSession(){userId=session.isLoggedIn()?session.getUserId():-1;employer=userId>0?db.getUserById(userId):null;if(employer==null||!DBHelper.ROLE_EMPLOYER.equals(employer.getRole())||!DBHelper.STATUS_ACTIVE.equals(employer.getStatus())){session.clear();goLogin();return false;}return true;}
+ private void setupQuickActions(){findViewById(R.id.btnPostJob).setOnClickListener(v->open(AddJobActivity.class));findViewById(R.id.actionPostJob).setOnClickListener(v->open(AddJobActivity.class));findViewById(R.id.actionEmptyPostJob).setOnClickListener(v->open(AddJobActivity.class));findViewById(R.id.actionManageJobs).setOnClickListener(v->open(ManageJobsActivity.class));findViewById(R.id.actionApplicants).setOnClickListener(v->open(ManageApplicantsActivity.class));findViewById(R.id.actionCompany).setOnClickListener(v->open(CompanyProfileActivity.class));findViewById(R.id.btnAllJobs).setOnClickListener(v->open(ManageJobsActivity.class));findViewById(R.id.btnAllApplicants).setOnClickListener(v->open(ManageApplicantsActivity.class));findViewById(R.id.btnUpdateCompany).setOnClickListener(v->open(CompanyProfileActivity.class));((MaterialButton)findViewById(R.id.btnLogoutEmployer)).setOnClickListener(v->new MaterialAlertDialogBuilder(this).setTitle("Đăng xuất?").setMessage("Bạn sẽ cần đăng nhập lại để quản lý tuyển dụng.").setNegativeButton("Hủy",null).setPositiveButton("Đăng xuất",(d,w)->{session.clear();goLogin();}).show());}
+ private void refresh(){showLoading(true);try{loadCompanyProfile();loadDashboardStats();loadRecentJobs();loadRecentApplicants();updateCompanyCompletion();}catch(Exception e){findViewById(R.id.tvEmployerError).setVisibility(View.VISIBLE);}finally{showLoading(false);}}
+ private void loadCompanyProfile(){company=db.getCompanyByUserId(userId);String name=company==null||TextUtils.isEmpty(company.getName())?"Doanh nghiệp của bạn":company.getName();((TextView)findViewById(R.id.tvCompanyName)).setText(name);((TextView)findViewById(R.id.tvRepresentative)).setText(company!=null&&!TextUtils.isEmpty(company.getRepresentativeName())?company.getRepresentativeName():safe(employer.getFullname(),"Nhà tuyển dụng"));ImageView logo=findViewById(R.id.ivCompanyLogo);if(company!=null&&!TextUtils.isEmpty(company.getLogo()))Glide.with(this).load(company.getLogo()).placeholder(R.drawable.ic_default_company).error(R.drawable.ic_default_company).into(logo);else logo.setImageResource(R.drawable.ic_default_company);findViewById(R.id.layoutCompanyMissing).setVisibility(View.VISIBLE);}
+ private void loadDashboardStats(){Map<String,Integer>s=db.getEmployerDashboardStats(userId);set(R.id.tvTotalJobs,s.get("total_jobs"));set(R.id.tvActiveJobs,s.get("active_jobs"));set(R.id.tvTotalApplicants,s.get("total_applicants"));set(R.id.tvPendingApplicants,s.get("pending_applicants"));set(R.id.tvStatusPending,s.get("pending_applicants"));set(R.id.tvStatusReview,s.get("review_applicants"));set(R.id.tvStatusAccepted,s.get("accepted_applicants"));set(R.id.tvStatusRejected,s.get("rejected_applicants"));}
+ private void loadRecentJobs(){LinearLayout host=findViewById(R.id.recentJobsContainer);host.removeAllViews();if(company==null){show(R.id.layoutJobsEmpty,true);return;}List<Job>rows=db.getRecentJobsByCompanyId(company.getId(),3);show(R.id.layoutJobsEmpty,rows.isEmpty());for(Job j:rows){View v=getLayoutInflater().inflate(R.layout.item_employer_recent_job,host,false);((TextView)v.findViewById(R.id.tvRecentJobTitle)).setText(safe(j.getTitle(),"Tin tuyển dụng"));((TextView)v.findViewById(R.id.tvRecentJobMeta)).setText(safe(j.getLocation(),"Đang cập nhật địa điểm"));((TextView)v.findViewById(R.id.tvRecentJobStatus)).setText(safe(j.getStatus(),"Đang tuyển"));((TextView)v.findViewById(R.id.tvRecentJobApplicants)).setText(db.getApplicationCountByJobId(j.getId())+" ứng viên");v.setOnClickListener(x->open(ManageJobsActivity.class));host.addView(v);}}
+ private void loadRecentApplicants(){LinearLayout host=findViewById(R.id.recentApplicantsContainer);host.removeAllViews();if(company==null){show(R.id.layoutApplicantsEmpty,true);return;}List<Map<String,Object>>rows=db.getRecentApplicantsByCompanyId(company.getId(),3);show(R.id.layoutApplicantsEmpty,rows.isEmpty());for(Map<String,Object>r:rows){View v=getLayoutInflater().inflate(R.layout.item_employer_recent_applicant,host,false);((TextView)v.findViewById(R.id.tvApplicantName)).setText(safe(value(r,"fullname"),"Ứng viên"));((TextView)v.findViewById(R.id.tvApplicantJob)).setText(safe(value(r,"job_title"),"Vị trí đang cập nhật"));((TextView)v.findViewById(R.id.tvApplicantDate)).setText(safe(value(r,"apply_date"),""));((TextView)v.findViewById(R.id.tvApplicantStatus)).setText(safe(value(r,"status"),"Đang chờ"));v.setOnClickListener(x->open(ManageApplicantsActivity.class));host.addView(v);}}
+ private void updateCompanyCompletion(){int total=8,done=0;if(company!=null){String[]v={company.getName(),company.getLogo(),company.getDescription(),company.getAddress(),company.getIndustry(),company.getCompanySize(),company.getWebsite(),company.getContactEmail()};for(String x:v)if(!TextUtils.isEmpty(x))done++;}int p=done*100/total;((TextView)findViewById(R.id.tvCompanyCompletion)).setText(p+"%");((LinearProgressIndicator)findViewById(R.id.progressCompanyCompletion)).setProgress(p);((TextView)findViewById(R.id.tvCompletionHint)).setText(p==100?"Hồ sơ đã sẵn sàng để thu hút ứng viên.":"Bổ sung thông tin còn thiếu để tăng độ tin cậy.");}
+ private void showLoading(boolean b){show(R.id.progressEmployer,b);show(R.id.tvEmployerError,false);}private void show(int id,boolean b){findViewById(id).setVisibility(b?View.VISIBLE:View.GONE);}private void set(int id,Integer x){((TextView)findViewById(id)).setText(String.valueOf(x==null?0:x));}private String safe(String x,String d){return TextUtils.isEmpty(x)?d:x;}private String value(Map<String,Object>m,String k){Object x=m.get(k);return x==null?null:String.valueOf(x);}private void open(Class<?> c){startActivity(new Intent(this,c));}private void goLogin(){Intent i=new Intent(this,LoginActivity.class);i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);startActivity(i);finish();}
 }

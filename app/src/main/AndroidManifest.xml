@@ -15,6 +15,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.JobFinderApp">
+        <activity android:name=".activities.SplashActivity" android:exported="true" android:theme="@style/Theme.JobFinderApp.Splash"><intent-filter><action android:name="android.intent.action.MAIN"/><category android:name="android.intent.category.LAUNCHER"/></intent-filter></activity>
+        <activity android:name=".activities.AdminDashboardActivity" android:exported="false" />
+        <activity android:name=".activities.AdminReportActivity" android:exported="false" />
+        <activity android:name=".activities.PendingEmployerActivity" android:exported="false" />
+        <activity android:name=".activities.ApplicantDetailActivity" android:exported="false" />
+        <activity android:name=".activities.ManageUsersActivity" android:exported="false" />
+        <activity android:name=".activities.UserDetailActivity" android:exported="false" />
+        <activity android:name=".activities.AdminManageJobsActivity" android:exported="false" />
+        <activity android:name=".activities.AdminJobDetailActivity" android:exported="false" />
 
         <!-- Employer Module Activities -->
         <activity
@@ -76,17 +85,7 @@
             android:exported="false" />
 
         <!-- Màn hình khởi động -->
-        <activity
-            android:name=".activities.LoginActivity"
-            android:exported="true">
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-
-        </activity>
+        <activity android:name=".activities.LoginActivity" android:exported="false" />
 
         <!-- MainActivity -->
         <activity

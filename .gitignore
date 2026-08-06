@@ -13,3 +13,24 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Android Studio
+.gradle/
+.gradle-user/
+.idea/
+*.iml
+local.properties
+
+# Build outputs
+build/
+**/build/
+*.apk
+*.aab
+
+# Native build
+.externalNativeBuild/
+.cxx/
+
+# Other generated files
+captures/
+.kotlin/

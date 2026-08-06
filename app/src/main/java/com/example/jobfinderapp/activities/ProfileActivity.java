@@ -1,161 +1,29 @@
 package com.example.jobfinderapp.activities;
 
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import androidx.appcompat.app.AppCompatActivity;
-
-import com.bumptech.glide.Glide;
-import com.example.jobfinderapp.R;
-import com.example.jobfinderapp.database.DBHelper;
-import com.example.jobfinderapp.models.CV;
-import com.example.jobfinderapp.models.Company;
-import com.example.jobfinderapp.models.User;
-import com.google.android.material.button.MaterialButton;
-import com.google.android.material.card.MaterialCardView;
+import android.content.Intent; import android.net.Uri; import android.os.Bundle; import android.view.View; import android.widget.EditText; import android.widget.LinearLayout; import android.widget.TextView; import android.widget.Toast;
+import androidx.activity.result.ActivityResultLauncher; import androidx.activity.result.contract.ActivityResultContracts; import androidx.appcompat.app.AppCompatActivity; import androidx.recyclerview.widget.LinearLayoutManager; import androidx.recyclerview.widget.RecyclerView;
+import com.bumptech.glide.Glide; import com.example.jobfinderapp.R; import com.example.jobfinderapp.adapters.ExperienceAdapter; import com.example.jobfinderapp.database.DBHelper; import com.example.jobfinderapp.models.Experience; import com.example.jobfinderapp.models.User; import com.example.jobfinderapp.utils.UserSession; import com.google.android.gms.auth.api.signin.GoogleSignIn; import com.google.android.gms.auth.api.signin.GoogleSignInOptions; import com.google.android.material.button.MaterialButton; import com.google.android.material.chip.Chip; import com.google.android.material.chip.ChipGroup; import com.google.android.material.dialog.MaterialAlertDialogBuilder; import com.google.firebase.auth.FirebaseAuth; import java.util.*;
 
 public class ProfileActivity extends AppCompatActivity {
-
-    private ImageView ivAvatar;
-    private TextView tvFullname, tvEmail, tvPhone;
-    private TextView tvLabel1, tvValue1, tvLabel2, tvValue2, tvLabel3, tvValue3, tvLabel4, tvValue4;
-    private LinearLayout layoutCandidateActions;
-    private MaterialButton btnEditProfile, btnLogout;
-    private MaterialCardView btnHistory, btnFavorite;
-    private DBHelper dbHelper;
-    private int currentUserId;
-    private String userRole;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
-
-        dbHelper = new DBHelper(this);
-        initViews();
-        loadSession();
-        setupEvents();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        loadProfileData();
-    }
-
-    private void initViews() {
-        ivAvatar = findViewById(R.id.ivAvatar);
-        tvFullname = findViewById(R.id.tvFullname);
-        tvEmail = findViewById(R.id.tvEmail);
-        tvPhone = findViewById(R.id.tvPhone);
-        
-        layoutCandidateActions = findViewById(R.id.layoutCandidateActions);
-        btnHistory = findViewById(R.id.btnHistory);
-        btnFavorite = findViewById(R.id.btnFavorite);
-        
-        tvLabel1 = findViewById(R.id.tvLabel1);
-        tvValue1 = findViewById(R.id.tvValue1);
-        tvLabel2 = findViewById(R.id.tvLabel2);
-        tvValue2 = findViewById(R.id.tvValue2);
-        tvLabel3 = findViewById(R.id.tvLabel3);
-        tvValue3 = findViewById(R.id.tvValue3);
-        tvLabel4 = findViewById(R.id.tvLabel4);
-        tvValue4 = findViewById(R.id.tvValue4);
-
-        btnEditProfile = findViewById(R.id.btnEditProfile);
-        btnLogout = findViewById(R.id.btnLogout);
-    }
-
-    private void loadSession() {
-        SharedPreferences pref = getSharedPreferences("UserSession", MODE_PRIVATE);
-        currentUserId = pref.getInt("USER_ID", -1);
-        userRole = pref.getString("USER_ROLE", "candidate");
-
-        if (currentUserId == -1) {
-            startActivity(new Intent(this, LoginActivity.class));
-            finish();
-        }
-    }
-
-    private void loadProfileData() {
-        User user = dbHelper.getUserById(currentUserId);
-        if (user == null) return;
-
-        tvFullname.setText(user.getFullname());
-        tvEmail.setText(user.getEmail());
-        tvPhone.setText(user.getPhone() != null && !user.getPhone().isEmpty() ? user.getPhone() : "Chưa cập nhật");
-
-        if (user.getAvatar() != null && !user.getAvatar().isEmpty()) {
-            Glide.with(this).load(user.getAvatar()).placeholder(R.drawable.ic_launcher_background).into(ivAvatar);
-        }
-
-        if ("employer".equals(userRole)) {
-            layoutCandidateActions.setVisibility(View.GONE);
-            loadEmployerData();
-        } else {
-            layoutCandidateActions.setVisibility(View.VISIBLE);
-            loadCandidateData();
-        }
-    }
-
-    private void loadEmployerData() {
-        Company company = dbHelper.getCompanyByUserId(currentUserId);
-        tvLabel1.setText("Tên công ty");
-        tvLabel2.setText("Địa chỉ");
-        tvLabel3.setText("Website");
-        tvLabel4.setText("Mô tả");
-
-        if (company != null) {
-            tvValue1.setText(company.getName());
-            tvValue2.setText(company.getAddress() != null && !company.getAddress().isEmpty() ? company.getAddress() : "Chưa cập nhật");
-            tvValue3.setText(company.getWebsite() != null && !company.getWebsite().isEmpty() ? company.getWebsite() : "Chưa cập nhật");
-            tvValue4.setText(company.getDescription() != null && !company.getDescription().isEmpty() ? company.getDescription() : "Chưa cập nhật");
-        }
-    }
-
-    private void loadCandidateData() {
-        CV cv = dbHelper.getCVByUserId(currentUserId);
-        tvLabel1.setText("Mục tiêu nghề nghiệp");
-        tvLabel2.setText("Kỹ năng");
-        tvLabel3.setText("Học vấn");
-        tvLabel4.setText("Kinh nghiệm");
-
-        if (cv != null) {
-            tvValue1.setText(cv.getObjective() != null && !cv.getObjective().isEmpty() ? cv.getObjective() : "Chưa cập nhật");
-            tvValue2.setText(cv.getSkills() != null && !cv.getSkills().isEmpty() ? cv.getSkills() : "Chưa cập nhật");
-            tvValue3.setText(cv.getEducation() != null && !cv.getEducation().isEmpty() ? cv.getEducation() : "Chưa cập nhật");
-            tvValue4.setText(cv.getExperience() != null && !cv.getExperience().isEmpty() ? cv.getExperience() : "Chưa cập nhật");
-        }
-    }
-
-    private void setupEvents() {
-        btnEditProfile.setOnClickListener(v -> {
-            if ("employer".equals(userRole)) {
-                startActivity(new Intent(this, CompanyProfileActivity.class));
-            } else {
-                Intent intent = new Intent(this, EditProfileActivity.class);
-                intent.putExtra("USER_ID", currentUserId);
-                startActivity(intent);
-            }
-        });
-
-        btnHistory.setOnClickListener(v -> startActivity(new Intent(this, ApplicationHistoryActivity.class)));
-        btnFavorite.setOnClickListener(v -> startActivity(new Intent(this, FavoriteActivity.class)));
-
-        btnLogout.setOnClickListener(v -> {
-            getSharedPreferences("UserSession", MODE_PRIVATE).edit().clear().apply();
-            Intent intent = new Intent(this, LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-            finish();
-        });
-
-        findViewById(R.id.toolbar).setOnClickListener(v -> finish());
-    }
+ private DBHelper db; private UserSession session; private User user; private String avatarUri=""; private ActivityResultLauncher<Intent> avatarPicker;
+ private TextView name,email,phone,location,bio,education,completion,cv,jobTitle,completionLabel,statApplications,statFavorites,statAccepted,statUnread; private com.google.android.material.progressindicator.LinearProgressIndicator completionProgress; private ChipGroup skills; private RecyclerView experiences; private ExperienceAdapter experienceAdapter; private View loading,content,error;
+ @Override public void onCreate(Bundle b){super.onCreate(b);db=DBHelper.getInstance(this);session=new UserSession(this);if(!guard())return;setContentView(R.layout.activity_profile);bind();registerAvatar();load();}
+ private boolean guard(){user=session.isLoggedIn()?db.getUserById(session.getUserId()):null;if(user!=null&&DBHelper.ROLE_CANDIDATE.equals(user.getRole())&&DBHelper.STATUS_ACTIVE.equals(user.getStatus()))return true;session.clear();Intent i=new Intent(this,LoginActivity.class);i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);startActivity(i);finishAffinity();return false;}
+ private void bind(){findViewById(R.id.btnBack).setOnClickListener(v->finish());name=findViewById(R.id.tvProfileName);email=findViewById(R.id.tvProfileEmail);phone=findViewById(R.id.tvProfilePhone);location=findViewById(R.id.tvProfileLocation);bio=findViewById(R.id.tvBioText);education=findViewById(R.id.tvEducation);completion=findViewById(R.id.tvProfileCompletion);cv=findViewById(R.id.tvCvSummary);jobTitle=findViewById(R.id.tvProfileJobTitle);completionLabel=findViewById(R.id.tvProfileCompletionLabel);completionProgress=findViewById(R.id.profileProgress);statApplications=findViewById(R.id.tvStatApplications);statFavorites=findViewById(R.id.tvStatFavorites);statAccepted=findViewById(R.id.tvStatAccepted);statUnread=findViewById(R.id.tvStatUnread);skills=findViewById(R.id.chipSkills);experiences=findViewById(R.id.rvExperience);loading=findViewById(R.id.layoutLoading);content=findViewById(R.id.layoutContent);error=findViewById(R.id.layoutError);experiences.setLayoutManager(new LinearLayoutManager(this));experiences.setNestedScrollingEnabled(false);experienceAdapter=new ExperienceAdapter(new ExperienceAdapter.Listener(){public void onEdit(Experience e){showExperienceDialog(e);}public void onDelete(Experience e){confirmDeleteExperience(e);}});experiences.setAdapter(experienceAdapter);findViewById(R.id.imgAvatar).setOnClickListener(v->pickAvatar());findViewById(R.id.btnEditPersonalInfo).setOnClickListener(v->editProfile());findViewById(R.id.btnAddBio).setOnClickListener(v->editBio());findViewById(R.id.btnEditEducation).setOnClickListener(v->editEducation());findViewById(R.id.btnAddSkill).setOnClickListener(v->addSkill());findViewById(R.id.btnAddExperience).setOnClickListener(v->addExperience());findViewById(R.id.btnUploadCv).setOnClickListener(v->startActivity(new Intent(this,EditProfileActivity.class).putExtra("USER_ID",user.getId())));findViewById(R.id.btnCompleteProfile).setOnClickListener(v->editProfile());findViewById(R.id.btnLogout).setOnClickListener(v->logout());setupNav();}
+ private void registerAvatar(){avatarPicker=registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),r->{if(r.getResultCode()!=RESULT_OK||r.getData()==null||r.getData().getData()==null)return;Uri u=r.getData().getData();try{getContentResolver().takePersistableUriPermission(u,Intent.FLAG_GRANT_READ_URI_PERMISSION);}catch(Exception ignored){} avatarUri=u.toString();saveProfile();});}
+ private void pickAvatar(){Intent i=new Intent(Intent.ACTION_OPEN_DOCUMENT);i.addCategory(Intent.CATEGORY_OPENABLE);i.setType("image/*");i.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION|Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);avatarPicker.launch(i);}
+ private void load(){show(true,false);try{user=db.getUserById(session.getUserId());if(user==null){guard();return;}session.save(user);avatarUri=empty(user.getAvatar());name.setText(value(user.getFullname(),"Ứng viên JobFinder"));email.setText(value(user.getEmail(),"Chưa cập nhật email"));jobTitle.setText(value(user.getProfessionalTitle(),"Chưa cập nhật vị trí mong muốn"));phone.setText(value(user.getPhone(),"Chưa cập nhật"));location.setText(value(user.getLocation(),"Chưa cập nhật"));bio.setText(value(user.getBio(),"Chưa có phần giới thiệu."));education.setText(value(user.getEducation(),"Chưa cập nhật"));Glide.with(this).load(user.getAvatar()).placeholder(R.drawable.ic_default_avatar).error(R.drawable.ic_default_avatar).into((android.widget.ImageView)findViewById(R.id.imgAvatar));skills.removeAllViews();for(String s:db.getSkills(user.getId())){Chip x=new Chip(this);x.setText(s);x.setCloseIconVisible(true);x.setOnCloseIconClickListener(v->{if(db.deleteSkill(user.getId(),s))load();});skills.addView(x);}List<Experience> list=new ArrayList<>();for(Map<String,String> m:db.getExperiences(user.getId()))list.add(new Experience(Integer.parseInt(m.get("id")),m.get("title"),m.get("company"),m.get("start_date"),m.get("end_date")));experienceAdapter.update(list);com.example.jobfinderapp.models.CV c=db.getCVByUserId(user.getId());cv.setText(c==null?"Bạn chưa có CV. Nhấn để tạo CV.":"CV: "+value(c.getCvName(),"Đã lưu"));int p=db.getProfileCompletion(user.getId());completion.setText(p+"% hoàn thiện hồ sơ");completionLabel.setText(p+"%");completionProgress.setProgress(p);statApplications.setText(String.valueOf(db.getCandidateApplicationCount(user.getId())));statFavorites.setText(String.valueOf(db.getFavoriteCount(user.getId())));statAccepted.setText(String.valueOf(db.getCandidateApplicationCountByStatus(user.getId(),"Đã chấp nhận")));statUnread.setText(String.valueOf(db.getUnreadNotificationCount(user.getId())));show(false,false);}catch(Exception e){show(false,true);}}
+ private void show(boolean l,boolean er){loading.setVisibility(l?View.VISIBLE:View.GONE);error.setVisibility(!l&&er?View.VISIBLE:View.GONE);content.setVisibility(!l&&!er?View.VISIBLE:View.GONE);}
+ private void saveProfile(){if(user==null)return;if(db.updateUserProfile(user.getId(),user.getFullname(),user.getPhone(),user.getLocation(),user.getBio(),user.getEducation(),avatarUri))load();}
+ private void editProfile(){LinearLayout form=new LinearLayout(this);form.setOrientation(LinearLayout.VERTICAL);form.setPadding(48,12,48,0);EditText full=new EditText(this),mobile=new EditText(this),place=new EditText(this);full.setHint("Họ và tên");mobile.setHint("Số điện thoại");place.setHint("Địa điểm");full.setText(user.getFullname());mobile.setText(user.getPhone());place.setText(user.getLocation());form.addView(full);form.addView(mobile);form.addView(place);new MaterialAlertDialogBuilder(this).setTitle("Thông tin cá nhân").setView(form).setPositiveButton("Lưu",(d,w)->{if(full.getText().toString().trim().isEmpty()||!mobile.getText().toString().trim().matches("^[0-9+][0-9 .-]{7,14}$")){Toast.makeText(this,"Thông tin không hợp lệ",Toast.LENGTH_SHORT).show();return;}user.setFullname(full.getText().toString().trim());user.setPhone(mobile.getText().toString().trim());user.setLocation(place.getText().toString().trim());saveProfile();}).setNegativeButton("Hủy",null).show();}
+ private void editBio(){EditText i=new EditText(this);i.setText(user.getBio());new MaterialAlertDialogBuilder(this).setTitle("Giới thiệu bản thân").setView(i).setPositiveButton("Lưu",(d,w)->{user.setBio(i.getText().toString().trim());saveProfile();}).setNegativeButton("Hủy",null).show();}
+ private void editEducation(){EditText i=new EditText(this);i.setText(user.getEducation());new MaterialAlertDialogBuilder(this).setTitle("Học vấn").setView(i).setPositiveButton("Lưu",(d,w)->{user.setEducation(i.getText().toString().trim());saveProfile();}).setNegativeButton("Hủy",null).show();}
+ private void addSkill(){EditText i=new EditText(this);new MaterialAlertDialogBuilder(this).setTitle("Thêm kỹ năng").setView(i).setPositiveButton("Thêm",(d,w)->{if(!db.addSkill(user.getId(),i.getText().toString()))Toast.makeText(this,"Kỹ năng trống hoặc đã tồn tại",Toast.LENGTH_SHORT).show();load();}).setNegativeButton("Hủy",null).show();}
+ private void addExperience(){showExperienceDialog(null);}
+ private void showExperienceDialog(Experience experience){View form=getLayoutInflater().inflate(R.layout.dialog_add_experience,null);EditText title=form.findViewById(R.id.edtJobTitle),company=form.findViewById(R.id.edtCompanyName),start=form.findViewById(R.id.edtStartDate),end=form.findViewById(R.id.edtEndDate);com.google.android.material.checkbox.MaterialCheckBox current=form.findViewById(R.id.chkCurrentJob);if(experience!=null){title.setText(experience.getTitle());company.setText(experience.getCompany());start.setText(experience.getStartDate());end.setText(experience.getEndDate());current.setChecked(empty(experience.getEndDate()).isEmpty());}start.setOnClickListener(v->pickExperienceMonth(start));end.setOnClickListener(v->pickExperienceMonth(end));current.setOnCheckedChangeListener((b,checked)->{end.setEnabled(!checked);if(checked)end.setText("");});androidx.appcompat.app.AlertDialog dialog=new MaterialAlertDialogBuilder(this).setTitle(experience==null?"Thêm kinh nghiệm":"Chỉnh sửa kinh nghiệm").setView(form).setNegativeButton("Hủy",null).setPositiveButton(experience==null?"Thêm":"Lưu thay đổi",null).create();dialog.setOnShowListener(x->dialog.getButton(-1).setOnClickListener(v->{String t=empty(title.getText().toString()),c=empty(company.getText().toString()),s=empty(start.getText().toString()),e=current.isChecked()?null:empty(end.getText().toString());title.setError(t.isEmpty()?"Vui lòng nhập chức danh":null);company.setError(c.isEmpty()?"Vui lòng nhập công ty":null);start.setError(s.isEmpty()?"Vui lòng chọn ngày bắt đầu":null);if(t.isEmpty()||c.isEmpty()||s.isEmpty())return;boolean ok=experience==null?db.addExperience(user.getId(),t,c,s,e):db.updateExperience(user.getId(),experience.getId(),t,c,s,e);if(!ok){end.setError("Ngày kết thúc phải từ ngày bắt đầu trở đi");return;}dialog.dismiss();load();}));dialog.show();}
+ private void pickExperienceMonth(EditText target){Calendar now=Calendar.getInstance();new android.app.DatePickerDialog(this,(view,year,month,day)->target.setText(String.format(Locale.ROOT,"%02d/%04d",month+1,year)),now.get(Calendar.YEAR),now.get(Calendar.MONTH),1).show();}
+ private void confirmDeleteExperience(Experience e){new MaterialAlertDialogBuilder(this).setTitle("Xóa kinh nghiệm?").setPositiveButton("Xóa",(d,w)->{db.deleteExperience(user.getId(),e.getId());load();}).setNegativeButton("Hủy",null).show();}
+ private void logout(){new MaterialAlertDialogBuilder(this).setTitle("Đăng xuất").setPositiveButton("Đăng xuất",(d,w)->{session.clear();try{FirebaseAuth.getInstance().signOut();GoogleSignIn.getClient(this,new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build()).signOut();}catch(Exception ignored){}Intent i=new Intent(this,LoginActivity.class);i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK|Intent.FLAG_ACTIVITY_CLEAR_TASK);startActivity(i);finish();}).setNegativeButton("Hủy",null).show();}
+ private void setupNav(){com.google.android.material.bottomnavigation.BottomNavigationView n=findViewById(R.id.bottomNavigation);n.setSelectedItemId(R.id.nav_profile);n.setOnItemSelectedListener(x->{int id=x.getItemId();if(id==R.id.nav_profile)return true;if(id==R.id.nav_home)startActivity(new Intent(this,HomeActivity.class));else if(id==R.id.nav_favorite)startActivity(new Intent(this,FavoriteActivity.class));else if(id==R.id.nav_application)startActivity(new Intent(this,ApplicationHistoryActivity.class));return true;});}
+ private String empty(String s){return s==null?"":s.trim();} private String value(String s,String f){return empty(s).isEmpty()?f:empty(s);} @Override protected void onResume(){super.onResume();if(user!=null)load();}
 }

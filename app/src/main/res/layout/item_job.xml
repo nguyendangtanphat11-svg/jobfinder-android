@@ -3,11 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="16dp"
-    android:layout_marginVertical="8dp"
-    app:cardCornerRadius="12dp"
+    android:layout_marginHorizontal="2dp"
+    android:layout_marginVertical="6dp"
+    android:clickable="true"
+    android:focusable="true"
+    app:cardBackgroundColor="@android:color/white"
+    app:cardCornerRadius="18dp"
     app:cardElevation="2dp"
-    app:strokeWidth="0dp">
+    app:strokeColor="#E9E4F1"
+    app:strokeWidth="1dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -16,101 +20,35 @@
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/ivCompanyLogo"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
-            android:scaleType="centerInside"
+            android:layout_width="52dp"
+            android:layout_height="52dp"
+            android:contentDescription="Logo công ty"
+            android:scaleType="centerCrop"
             android:src="@mipmap/ic_launcher"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Small" />
-
-        <TextView
-            android:id="@+id/tvJobTitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="8dp"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:text="Android Developer"
-            android:textColor="@color/black"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@+id/ivFavorite"
-            app:layout_constraintStart_toEndOf="@id/ivCompanyLogo"
-            app:layout_constraintTop_toTopOf="@id/ivCompanyLogo" />
-
-        <TextView
-            android:id="@+id/tvCompanyName"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:text="FPT Software"
-            android:textColor="@color/gray_text"
-            android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="@id/tvJobTitle"
-            app:layout_constraintStart_toStartOf="@id/tvJobTitle"
-            app:layout_constraintTop_toBottomOf="@id/tvJobTitle" />
+            app:shapeAppearanceOverlay="@style/ShapeAppearance.Material3.Corner.Medium" />
 
         <ImageView
             android:id="@+id/ivFavorite"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true"
+            android:padding="12dp"
             android:src="@android:drawable/btn_star_big_off"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:tint="@color/gray_text" />
+            app:tint="#8A7A9C" />
 
-        <LinearLayout
-            android:id="@+id/llInfo"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/ivCompanyLogo">
+        <TextView android:id="@+id/tvJobTitle" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_marginStart="12dp" android:ellipsize="end" android:maxLines="2" android:textColor="#28193F" android:textSize="16sp" android:textStyle="bold" app:layout_constraintEnd_toStartOf="@id/ivFavorite" app:layout_constraintStart_toEndOf="@id/ivCompanyLogo" app:layout_constraintTop_toTopOf="@id/ivCompanyLogo" />
+        <TextView android:id="@+id/tvCompanyName" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:ellipsize="end" android:maxLines="1" android:textColor="#655A70" android:textSize="13sp" app:layout_constraintEnd_toEndOf="@id/tvJobTitle" app:layout_constraintStart_toStartOf="@id/tvJobTitle" app:layout_constraintTop_toBottomOf="@id/tvJobTitle" />
 
-            <TextView
-                android:id="@+id/tvSalary"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@color/light_green"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="4dp"
-                android:text="15-20 triệu"
-                android:textColor="@color/primary_green"
-                android:textSize="12sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tvLocation"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:background="@color/light_gray"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="4dp"
-                android:text="Hà Nội"
-                android:textColor="@color/gray_text"
-                android:textSize="12sp" />
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
-
-            <TextView
-                android:id="@+id/tvDeadline"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Hạn: 30/06"
-                android:textColor="@color/gray_text"
-                android:textSize="12sp" />
-
-        </LinearLayout>
-
+        <TextView android:id="@+id/tvLocation" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_marginTop="14dp" android:ellipsize="end" android:maxLines="1" android:textColor="#655A70" android:textSize="13sp" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@id/ivCompanyLogo" />
+        <TextView android:id="@+id/tvSalary" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_marginTop="7dp" android:ellipsize="end" android:maxLines="1" android:textColor="#5723A4" android:textSize="14sp" android:textStyle="bold" app:layout_constraintEnd_toStartOf="@id/tvJobType" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@id/tvLocation" />
+        <TextView android:id="@+id/tvJobType" android:layout_width="wrap_content" android:layout_height="wrap_content" android:background="#F0EBFC" android:paddingHorizontal="8dp" android:paddingVertical="4dp" android:textColor="#5D32A2" android:textSize="12sp" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toTopOf="@id/tvSalary" />
+        <TextView android:id="@+id/tvDeadline" android:layout_width="0dp" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:ellipsize="end" android:maxLines="1" android:textColor="#817689" android:textSize="12sp" app:layout_constraintEnd_toStartOf="@id/btnApplyFast" app:layout_constraintStart_toStartOf="parent" app:layout_constraintTop_toBottomOf="@id/tvSalary" />
+        <com.google.android.material.button.MaterialButton android:id="@+id/btnApplyFast" style="@style/Widget.MaterialComponents.Button.TextButton" android:layout_width="wrap_content" android:layout_height="48dp" android:insetTop="0dp" android:insetBottom="0dp" android:text="Ứng tuyển" android:textAllCaps="false" android:textColor="#622FB5" android:textStyle="bold" app:layout_constraintBottom_toBottomOf="@id/tvDeadline" app:layout_constraintEnd_toEndOf="parent" app:layout_constraintTop_toTopOf="@id/tvDeadline" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

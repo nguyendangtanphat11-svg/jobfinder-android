@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Màu cơ bản -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Màu chủ đạo (Tím Việc Làm 24h) -->
+    <color name="primary_purple">#5B2E90</color>
+    <color name="primary_purple_light">#6C3FB8</color>
+    <color name="purple_bg_light">#F0F0F5</color>
+
+    <!-- Các màu giữ lại -->
     <color name="primary_green">#00B14F</color>
     <color name="primary_green_dark">#008C3E</color>
     <color name="light_green">#E6F7ED</color>
@@ -9,4 +17,11 @@
     <color name="light_gray">#F2F2F2</color>
     <color name="error_red">#FF0000</color>
     <color name="error_color">#F44336</color>
+    <color name="status_sent_text">#1756A8</color>
+    <color name="status_pending_text">#935900</color>
+    <color name="status_accepted_text">#13733D</color>
+    <color name="status_rejected_text">#B42318</color>
+    <color name="notification_unread_background">#F8F4FF</color>
+    <color name="notification_read_background">#FFFFFFFF</color>
+    <color name="jf_primary">#6C3FB8</color><color name="jf_primary_dark">#3B176D</color><color name="jf_primary_light">#EEE5FA</color><color name="jf_accent">#FFB547</color><color name="jf_background">#F7F7FB</color><color name="jf_surface">#FFFFFF</color><color name="jf_text_primary">#1D1B20</color><color name="jf_text_secondary">#6F6B75</color><color name="jf_success">#2E9D62</color><color name="jf_warning">#E99A28</color><color name="jf_error">#D64545</color><color name="jf_info">#3F76D3</color><color name="admin_primary">#5B2CA0</color><color name="admin_dark">#35145F</color><color name="admin_light">#F1E9FC</color><color name="admin_icon_blue">#E8F0FF</color><color name="admin_icon_green">#E5F5EC</color><color name="admin_icon_orange">#FFF1D9</color><color name="admin_icon_red">#FCE8E8</color><color name="admin_border">#E9E5EE</color><color name="employer_primary">#5B3FD1</color><color name="employer_dark">#35208C</color><color name="employer_light">#EEE9FF</color><color name="employer_border">#E8E5EE</color>
 </resources>

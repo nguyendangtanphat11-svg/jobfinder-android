@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "574016817329",
+    "project_id": "jobfinderapp-12d4a",
+    "storage_bucket": "jobfinderapp-12d4a.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:574016817329:android:511525ac6de94958443a90",
+        "android_client_info": {
+          "package_name": "com.example.jobfinderapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "574016817329-suergj4up2k77vunhqm2m4n6dtvjocor.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.jobfinderapp",
+            "certificate_hash": "6e33883aa0d1da6e468beb4480866f743bac42cd"
+          }
+        },
+        {
+          "client_id": "574016817329-pqv5ituoapf8mqrcuhs38vsmvp51vif7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDnrAclgVvFtrRuNvErq3kre6_BmUstU-g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "574016817329-pqv5ituoapf8mqrcuhs38vsmvp51vif7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

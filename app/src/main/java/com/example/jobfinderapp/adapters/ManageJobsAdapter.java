@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -11,7 +12,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.jobfinderapp.R;
 import com.example.jobfinderapp.models.Job;
-import com.google.android.material.button.MaterialButton;
 
 import java.util.List;
 
@@ -44,15 +44,15 @@ public class ManageJobsAdapter extends RecyclerView.Adapter<ManageJobsAdapter.Jo
         Job job = jobList.get(position);
         holder.tvJobTitle.setText(job.getTitle());
         holder.tvSalary.setText(job.getSalary());
-        holder.tvLocation.setText("📍 " + job.getLocation());
         holder.tvDeadline.setText("Hạn nộp: " + job.getDeadline());
         holder.tvStatusBadge.setText(job.getStatus());
 
+        // Update status badge UI based on status string
         if ("Đã đóng".equals(job.getStatus())) {
             holder.tvStatusBadge.setBackgroundResource(R.drawable.bg_status_rejected);
             holder.tvStatusBadge.setTextColor(context.getResources().getColor(R.color.error_color));
         } else {
-            holder.tvStatusBadge.setBackgroundResource(R.drawable.bg_status_pending);
+            holder.tvStatusBadge.setBackgroundResource(R.drawable.bg_status_accepted);
             holder.tvStatusBadge.setTextColor(context.getResources().getColor(R.color.primary_green));
         }
 
@@ -66,16 +66,15 @@ public class ManageJobsAdapter extends RecyclerView.Adapter<ManageJobsAdapter.Jo
     }
 
     public static class JobViewHolder extends RecyclerView.ViewHolder {
-        TextView tvJobTitle, tvSalary, tvLocation, tvDeadline, tvStatusBadge;
-        MaterialButton btnEdit, btnDelete;
+        TextView tvJobTitle, tvSalary, tvDeadline, tvStatusBadge;
+        ImageButton btnEdit, btnDelete;
 
         public JobViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvJobTitle = itemView.findViewById(R.id.tvJobTitle);
-            tvSalary = itemView.findViewById(R.id.tvSalary);
-            tvLocation = itemView.findViewById(R.id.tvLocation);
-            tvDeadline = itemView.findViewById(R.id.tvDeadline);
-            tvStatusBadge = itemView.findViewById(R.id.tvStatusBadge);
+            tvJobTitle = itemView.findViewById(R.id.tvManageJobTitle);
+            tvSalary = itemView.findViewById(R.id.tvManageJobSalary);
+            tvDeadline = itemView.findViewById(R.id.tvManageJobDeadline);
+            tvStatusBadge = itemView.findViewById(R.id.tvManageJobStatus);
             btnEdit = itemView.findViewById(R.id.btnEditJob);
             btnDelete = itemView.findViewById(R.id.btnDeleteJob);
         }

@@ -26,7 +26,8 @@ public class MainActivity extends AppCompatActivity {
 
         btnSave = findViewById(R.id.btnSave);
 
-        dbHelper = new DBHelper(this);
+        // Sử dụng Singleton DBHelper
+        dbHelper = DBHelper.getInstance(this);
 
         btnSave.setOnClickListener(v -> {
 
@@ -34,10 +35,12 @@ public class MainActivity extends AppCompatActivity {
             String email = edtEmail.getText().toString();
             String password = edtPassword.getText().toString();
 
+            // Fix: Added the missing 'role' argument (defaulting to "candidate")
             boolean result = dbHelper.insertUser(
                     name,
                     email,
-                    password
+                    password,
+                    "candidate"
             );
 
             if (result) {

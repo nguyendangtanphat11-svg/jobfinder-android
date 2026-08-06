@@ -26,7 +26,8 @@
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <androidx.recyclerview.widget.RecyclerView
+            <EditText android:id="@+id/etApplicantSearch" android:layout_width="match_parent" android:layout_height="52dp" android:layout_margin="16dp" android:hint="Tìm ứng viên, email hoặc vị trí" android:inputType="text" />
+            <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvApplicants"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
